@@ -1,0 +1,4 @@
+[2026-03-25 13:54:34,075: INFO/MainProcess] Connected to rediss://default:**@definite-doe-67093.upstash.io:6379/0
+[2026-03-25 13:54:34,341: INFO/MainProcess] mingle: searching for neighbors
+[2026-03-25 13:54:36,458: INFO/MainProcess] mingle: all alone
+[2026-03-25 13:54:38,075: INFO/MainProcess] celery@Dheena_B ready.

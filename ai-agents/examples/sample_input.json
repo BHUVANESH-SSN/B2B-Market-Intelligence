@@ -1,0 +1,18 @@
+{
+  "competitor": "Acme",
+  "diffs": {
+    "pricing": [
+      "Introduced annual discount for enterprise plan",
+      "Added CTA for custom pricing demo"
+    ],
+    "hero": [
+      "Replaced headline with automation-first message"
+    ],
+    "features": [
+      "Added Salesforce integration to workflow builder page"
+    ]
+  },
+  "history_claims": [
+    "Acme launched a free trial"
+  ]
+}

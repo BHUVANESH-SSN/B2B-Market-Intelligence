@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[codz]
@@ -205,3 +206,18 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+=======
+.env
+__pycache__/
+*.pyc
+.venv/
+ai-agents/.env
+ai-agents/.venv/
+ai-agents/__pycache__/
+ai-agents/outputs/
+scraper-agents/.env
+scraper-agents/.venv/
+scraper-agents/__pycache__/
+scraper-agents/outputs/
+scraper-agents/snapshots/
+>>>>>>> 68127a88decd0144e5acf2760c73ef3236d3a26a
