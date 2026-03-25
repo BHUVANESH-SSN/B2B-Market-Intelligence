@@ -1,0 +1,20 @@
+ 
+ -------------- celery@Dheena_B v5.6.2 (recovery)
+--- ***** ----- 
+-- ******* ---- Windows-11-10.0.26200-SP0 2026-03-25 13:54:33
+- *** --- * --- 
+- ** ---------- [config]
+- ** ---------- .> app:         market_intelligence:0x1cb2cf3da90
+- ** ---------- .> transport:   rediss://default:**@definite-doe-67093.upstash.io:6379/0
+- ** ---------- .> results:     rediss://default:**@definite-doe-67093.upstash.io:6379/0
+- *** --- * --- .> concurrency: 12 (solo)
+-- ******* ---- .> task events: OFF (enable -E to monitor tasks in this worker)
+--- ***** ----- 
+ -------------- [queues]
+                .> celery           exchange=celery(direct) key=celery
+                
+
+[tasks]
+  . analysis.run_market_analysis
+  . healthcheck.ping
+
