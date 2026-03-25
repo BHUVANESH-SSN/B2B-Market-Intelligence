@@ -13,11 +13,12 @@ from app.db.crud.organization import (
     get_accessible_orgs,
 )
 from app.db.crud.report import create_report, get_report_by_id
-from app.db.crud.user import create_user, get_user_by_email, get_user_by_id
+from app.db.crud.user import create_user, get_user_by_clerk_user_id, get_user_by_email, get_user_by_id
 
 __all__ = [
     "get_user_by_email",
     "get_user_by_id",
+    "get_user_by_clerk_user_id",
     "create_user",
     "create_organization",
     "add_user_to_organization",

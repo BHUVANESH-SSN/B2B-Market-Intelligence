@@ -1,0 +1,40 @@
+[2026-03-25 12:28:21,331: INFO/MainProcess] Connected to rediss://default:**@definite-doe-67093.upstash.io:6379//
+[2026-03-25 12:28:22,007: INFO/MainProcess] mingle: searching for neighbors
+[2026-03-25 12:28:22,096: INFO/SpawnPoolWorker-3] child process 22272 calling self.run()
+[2026-03-25 12:28:22,118: INFO/SpawnPoolWorker-6] child process 7328 calling self.run()
+[2026-03-25 12:28:22,133: INFO/SpawnPoolWorker-4] child process 21160 calling self.run()
+[2026-03-25 12:28:22,148: INFO/SpawnPoolWorker-11] child process 14660 calling self.run()
+[2026-03-25 12:28:22,197: INFO/SpawnPoolWorker-1] child process 19440 calling self.run()
+[2026-03-25 12:28:22,202: INFO/SpawnPoolWorker-5] child process 5196 calling self.run()
+[2026-03-25 12:28:22,233: INFO/SpawnPoolWorker-2] child process 22268 calling self.run()
+[2026-03-25 12:28:22,254: INFO/SpawnPoolWorker-9] child process 22116 calling self.run()
+[2026-03-25 12:28:22,290: INFO/SpawnPoolWorker-12] child process 21776 calling self.run()
+[2026-03-25 12:28:22,323: INFO/SpawnPoolWorker-8] child process 7140 calling self.run()
+[2026-03-25 12:28:22,438: INFO/SpawnPoolWorker-7] child process 21636 calling self.run()
+[2026-03-25 12:28:22,484: INFO/SpawnPoolWorker-10] child process 14132 calling self.run()
+[2026-03-25 12:28:26,086: INFO/MainProcess] mingle: all alone
+[2026-03-25 12:28:28,750: INFO/MainProcess] celery@Dheena_B ready.
+[2026-03-25 12:28:28,813: INFO/MainProcess] Task analysis.run_market_analysis[09abafbb-35ac-4a48-a819-44acf6d2c002] received
+[2026-03-25 12:28:29,687: ERROR/MainProcess] Task handler raised error: ValueError('not enough values to unpack (expected 3, got 0)')
+billiard.einfo.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "C:\Users\bdhee\AppData\Local\Programs\Python\Python313\Lib\site-packages\billiard\pool.py", line 362, in workloop
+    result = (True, prepare_result(fun(*args, **kwargs)))
+                                   ~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\bdhee\AppData\Local\Programs\Python\Python313\Lib\site-packages\celery\app\trace.py", line 683, in fast_trace_task
+    tasks, accept, hostname = _loc
+    ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 3, got 0)
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "C:\Users\bdhee\AppData\Local\Programs\Python\Python313\Lib\site-packages\billiard\pool.py", line 362, in workloop
+    result = (True, prepare_result(fun(*args, **kwargs)))
+                                   ~~~^^^^^^^^^^^^^^^^^
+  File "C:\Users\bdhee\AppData\Local\Programs\Python\Python313\Lib\site-packages\celery\app\trace.py", line 683, in fast_trace_task
+    tasks, accept, hostname = _loc
+    ^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: not enough values to unpack (expected 3, got 0)

@@ -3,27 +3,16 @@ from __future__ import annotations
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
-from app.api.deps import get_current_user, get_db
-from app.db.models import User
-from app.db.schemas.auth import AuthResponse, CurrentUserResponse, LoginRequest, SignupRequest
-from app.services.auth_service import get_current_user_response, login_user, signup_user
+from app.api.deps import AuthContext, get_auth_context, get_db
+from app.db.schemas.auth import CurrentUserResponse
+from app.services.auth_service import get_current_user_response
 
 router = APIRouter()
-
-
-@router.post("/signup", response_model=AuthResponse)
-def signup(payload: SignupRequest, db: Session = Depends(get_db)) -> AuthResponse:
-    return signup_user(db, payload)
-
-
-@router.post("/login", response_model=AuthResponse)
-def login(payload: LoginRequest, db: Session = Depends(get_db)) -> AuthResponse:
-    return login_user(db, payload)
 
 
 @router.get("/me", response_model=CurrentUserResponse)
 def me(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user),
+    auth_context: AuthContext = Depends(get_auth_context),
 ) -> CurrentUserResponse:
-    return get_current_user_response(db, current_user)
+    return get_current_user_response(db, auth_context.user, auth_context.claims)

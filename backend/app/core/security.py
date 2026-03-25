@@ -1,10 +1,11 @@
 from __future__ import annotations
 
-from datetime import datetime, timedelta, timezone
+from functools import lru_cache
 from typing import Any
 
 import bcrypt
-from jose import JWTError, jwt
+import jwt
+from jwt import InvalidTokenError, PyJWKClient
 
 from app.core.config import settings
 
@@ -17,16 +18,37 @@ def get_password_hash(password: str) -> str:
     return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
-def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
-    expire = datetime.now(timezone.utc) + (
-        expires_delta or timedelta(minutes=settings.access_token_expire_minutes)
-    )
-    payload: dict[str, Any] = {"sub": subject, "exp": expire}
-    return jwt.encode(payload, settings.secret_key, algorithm=settings.algorithm)
+@lru_cache(maxsize=4)
+def _get_jwks_client(jwks_url: str) -> PyJWKClient:
+    return PyJWKClient(jwks_url)
 
 
-def decode_access_token(token: str) -> dict[str, Any]:
+def verify_clerk_session_token(token: str) -> dict[str, Any]:
+    if not settings.clerk_issuer:
+        raise ValueError("CLERK_ISSUER is not configured.")
+
+    jwks_url = settings.clerk_jwks_url_resolved
+    if not jwks_url:
+        raise ValueError("Clerk JWKS URL could not be resolved.")
+
     try:
-        return jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
-    except JWTError as exc:
-        raise ValueError("Invalid or expired authentication token.") from exc
+        signing_key = _get_jwks_client(jwks_url).get_signing_key_from_jwt(token)
+        claims = jwt.decode(
+            token,
+            signing_key.key,
+            algorithms=["RS256"],
+            issuer=settings.clerk_issuer,
+            options={"verify_aud": False},
+        )
+    except InvalidTokenError as exc:
+        raise ValueError("Invalid or expired Clerk session token.") from exc
+
+    azp = claims.get("azp")
+    allowed_parties = settings.clerk_authorized_parties_list
+    if azp and allowed_parties and azp not in allowed_parties:
+        raise ValueError("Clerk token authorized party is not allowed for this backend.")
+
+    if not claims.get("sub"):
+        raise ValueError("Clerk token is missing the subject claim.")
+
+    return claims

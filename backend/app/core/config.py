@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     secret_key: str = "change-me"
     algorithm: str = "HS256"
     access_token_expire_minutes: int = 60
+    clerk_issuer: str | None = None
+    clerk_jwks_url: str | None = None
+    clerk_secret_key: str | None = None
+    clerk_authorized_parties: str = ""
+    clerk_api_url: str = "https://api.clerk.com/v1"
     ai_agent_enabled: bool = False
     ai_agent_base_url: str | None = None
     ai_agent_analyze_path: str = "/analyze"
@@ -35,6 +40,18 @@ class Settings(BaseSettings):
         if self.cors_origins.strip() == "*":
             return ["*"]
         return [item.strip() for item in self.cors_origins.split(",") if item.strip()]
+
+    @property
+    def clerk_authorized_parties_list(self) -> list[str]:
+        return [item.strip() for item in self.clerk_authorized_parties.split(",") if item.strip()]
+
+    @property
+    def clerk_jwks_url_resolved(self) -> str | None:
+        if self.clerk_jwks_url:
+            return self.clerk_jwks_url
+        if self.clerk_issuer:
+            return f"{self.clerk_issuer.rstrip('/')}/.well-known/jwks.json"
+        return None
 
 
 @lru_cache

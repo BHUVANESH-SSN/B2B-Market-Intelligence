@@ -1,0 +1,6 @@
+[2026-03-25 12:30:22,795: INFO/MainProcess] Connected to rediss://default:**@definite-doe-67093.upstash.io:6379//
+[2026-03-25 12:30:23,137: INFO/MainProcess] mingle: searching for neighbors
+[2026-03-25 12:30:25,426: INFO/MainProcess] mingle: all alone
+[2026-03-25 12:30:27,253: INFO/MainProcess] celery@Dheena_B ready.
+[2026-03-25 12:30:56,699: INFO/MainProcess] Task healthcheck.ping[90225b4e-3757-451c-be03-6cef75e201fc] received
+[2026-03-25 12:30:57,386: INFO/MainProcess] Task healthcheck.ping[90225b4e-3757-451c-be03-6cef75e201fc] succeeded in 0.6839712999999392s: {'status': 'ok'}

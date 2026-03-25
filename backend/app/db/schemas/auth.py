@@ -1,21 +1,10 @@
 from __future__ import annotations
 
 from datetime import datetime
+from typing import Any
 from uuid import UUID
 
-from pydantic import BaseModel, ConfigDict, Field
-
-
-class SignupRequest(BaseModel):
-    name: str = Field(min_length=2, max_length=100)
-    email: str = Field(min_length=5, max_length=255)
-    password: str = Field(min_length=8, max_length=128)
-    organization_name: str | None = Field(default=None, max_length=255)
-
-
-class LoginRequest(BaseModel):
-    email: str
-    password: str
+from pydantic import BaseModel, ConfigDict
 
 
 class OrganizationMembershipRead(BaseModel):
@@ -28,6 +17,7 @@ class UserRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: UUID
+    clerk_user_id: str | None
     name: str
     email: str
     is_active: bool
@@ -36,9 +26,5 @@ class UserRead(BaseModel):
 
 class CurrentUserResponse(UserRead):
     organizations: list[OrganizationMembershipRead]
-
-
-class AuthResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
-    user: CurrentUserResponse
+    session_id: str | None = None
+    token_claims: dict[str, Any] | None = None
