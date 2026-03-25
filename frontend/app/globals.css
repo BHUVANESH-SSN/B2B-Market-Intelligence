@@ -24,7 +24,7 @@
     background-attachment: fixed;
     color: var(--white);
     overflow-x: hidden;
-    cursor: none;
+    cursor: auto;
   }
 }
 
@@ -449,7 +449,7 @@
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
   }
 
-  .hero-input::focus {
+  .hero-input:focus {
     border-color: rgba(124, 58, 237, 0.6);
     box-shadow: 0 0 24px rgba(124, 58, 237, 0.15);
   }

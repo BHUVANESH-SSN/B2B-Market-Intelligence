@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Bebas_Neue, Inter, JetBrains_Mono } from "next/font/google";
+import DashboardLayout from "./components/DashboardLayout";
 import "./globals.css";
 
 const bebasNeue = Bebas_Neue({
@@ -23,6 +24,7 @@ export const metadata: Metadata = {
   description: "OrchestAI crawls competitor landing pages, tracks messaging shifts, detects pricing changes, and surfaces strategic whitespace — powered by AI agents.",
 };
 
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -33,8 +35,8 @@ export default function RootLayout({
       lang="en"
       className={`${bebasNeue.variable} ${inter.variable} ${jetbrainsMono.variable} antialiased`}
     >
-      <body className="min-h-full font-body text-slate-900 selection:bg-[#7c3aed] selection:text-white">
-        {children}
+      <body className="min-h-full font-body text-slate-900 selection:bg-[#7c3aed] selection:text-white cursor-auto">
+        <DashboardLayout>{children}</DashboardLayout>
       </body>
     </html>
   );

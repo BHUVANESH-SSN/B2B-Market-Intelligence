@@ -1,8 +1,10 @@
 "use client";
 
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export default function Onboarding() {
+    const router = useRouter();
     const [step, setStep] = useState(1);
     const [companyUrl, setCompanyUrl] = useState("");
     const [competitors, setCompetitors] = useState(["", "", ""]);
@@ -106,7 +108,7 @@ export default function Onboarding() {
                             </button>
                             <button
                                 className="flex-1 py-4 bg-slate-900 text-white rounded-xl font-bold text-[15px] shadow-lg shadow-slate-900/20 hover:shadow-xl hover:-translate-y-0.5 transition-all text-center flex items-center justify-center gap-2"
-                                onClick={() => window.location.href = '/dashboard'}
+                                onClick={() => router.push('/dashboard')}
                             >
                                 Deploy Crawl Agents
                                 <svg className="w-4 h-4 text-violet-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>

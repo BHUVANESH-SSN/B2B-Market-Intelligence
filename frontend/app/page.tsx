@@ -1,8 +1,11 @@
 "use client";
 
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { MouseEvent as ReactMouseEvent, useEffect, useRef, useState } from "react";
 
 export default function Home() {
+  const router = useRouter();
   const [isHoveringButton, setIsHoveringButton] = useState(false);
   const cursorRef = useRef<HTMLDivElement>(null);
   const cursorRingRef = useRef<HTMLDivElement>(null);
@@ -228,8 +231,8 @@ export default function Home() {
 
       {/* FLOATING AUTH BUTTONS */}
       <div style={{ position: 'fixed', top: '24px', right: '48px', zIndex: 100, display: 'flex', gap: '24px', alignItems: 'center' }}>
-        <a href="#" style={{ fontSize: '13px', color: 'var(--muted)', textDecoration: 'none', fontWeight: 500, letterSpacing: '0.04em' }}>Sign In</a>
-        <a href="#" className="btn-primary" style={{ padding: '10px 24px', borderRadius: '99px', fontSize: '13px' }}>Sign Up</a>
+        <Link href="#" style={{ fontSize: '13px', color: 'var(--muted)', textDecoration: 'none', fontWeight: 500, letterSpacing: '0.04em' }}>Sign In</Link>
+        <Link href="/onboarding" className="btn-primary" style={{ padding: '10px 24px', borderRadius: '99px', fontSize: '13px' }}>Sign Up</Link>
       </div>
 
       {/* HERO */}
