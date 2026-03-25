@@ -1,0 +1,1027 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Market Intelligence Engine — Implementation Plan</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<style>
+  :root {
+    --bg: #09090b;
+    --surface: #111113;
+    --surface2: #18181b;
+    --border: #27272a;
+    --border2: #3f3f46;
+    --text: #fafafa;
+    --muted: #a1a1aa;
+    --dim: #52525b;
+    --purple: #a78bfa;
+    --purple-dim: #7c3aed22;
+    --teal: #2dd4bf;
+    --teal-dim: #0d948422;
+    --coral: #fb923c;
+    --coral-dim: #ea580c22;
+    --amber: #fbbf24;
+    --amber-dim: #d9770622;
+    --blue: #60a5fa;
+    --blue-dim: #1d4ed822;
+    --green: #4ade80;
+    --green-dim: #16a34a22;
+    --pink: #f472b6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    font-size: 15px;
+  }
+
+  /* HEADER */
+  .hero {
+    padding: 64px 48px 48px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -120px; left: -120px;
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, #7c3aed18 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -80px; right: -80px;
+    width: 400px; height: 400px;
+    background: radial-gradient(circle, #0d948418 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .track-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--purple-dim); border: 1px solid #7c3aed55;
+    color: var(--purple); font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; padding: 4px 12px; border-radius: 4px;
+    margin-bottom: 20px; letter-spacing: 0.08em;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 16px;
+  }
+  .hero h1 span { color: var(--teal); }
+  .hero p { color: var(--muted); font-size: 16px; max-width: 600px; font-weight: 300; }
+  .meta-row {
+    display: flex; gap: 24px; margin-top: 32px; flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 13px; color: var(--muted);
+  }
+  .meta-pill .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+  }
+
+  /* LAYOUT */
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 48px; }
+  .section { padding: 48px 48px; border-bottom: 1px solid var(--border); }
+  .section-header {
+    display: flex; align-items: baseline; gap: 16px; margin-bottom: 32px;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--dim);
+    letter-spacing: 0.1em;
+  }
+  .section-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.01em;
+  }
+
+  /* STACK GRID */
+  .stack-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+  }
+  .stack-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px;
+    transition: border-color 0.2s, transform 0.2s;
+  }
+  .stack-card:hover { border-color: var(--border2); transform: translateY(-2px); }
+  .stack-card .layer-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 0.08em;
+    padding: 2px 8px; border-radius: 3px;
+    margin-bottom: 10px; display: inline-block;
+  }
+  .stack-card .tech-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px; font-weight: 700; margin-bottom: 4px;
+  }
+  .stack-card .tech-why {
+    font-size: 12px; color: var(--muted); line-height: 1.5;
+  }
+  .tag-fe  { background: var(--purple-dim); color: var(--purple); border: 1px solid #7c3aed33; }
+  .tag-be  { background: var(--teal-dim);   color: var(--teal);   border: 1px solid #0d948433; }
+  .tag-ai  { background: var(--amber-dim);  color: var(--amber);  border: 1px solid #d9770633; }
+  .tag-scrape { background: var(--coral-dim); color: var(--coral); border: 1px solid #ea580c33; }
+  .tag-db  { background: var(--blue-dim);   color: var(--blue);   border: 1px solid #1d4ed833; }
+  .tag-ops { background: var(--green-dim);  color: var(--green);  border: 1px solid #16a34a33; }
+
+  /* ARCHITECTURE DIAGRAM */
+  .arch-diagram {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    overflow-x: auto;
+  }
+  .arch-row {
+    display: flex; gap: 12px; justify-content: center;
+    margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .arch-node {
+    border-radius: 8px; padding: 10px 16px;
+    font-size: 12px; font-weight: 500;
+    text-align: center; min-width: 120px;
+    border: 1px solid transparent;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .arch-connector {
+    display: flex; justify-content: center;
+    color: var(--dim); font-size: 18px;
+    margin: 2px 0; letter-spacing: 2px;
+  }
+  .arch-fan {
+    display: flex; gap: 12px; justify-content: center;
+    margin: 2px 0; flex-wrap: wrap;
+  }
+  .node-purple { background: var(--purple-dim); border-color: #7c3aed55; color: var(--purple); }
+  .node-teal   { background: var(--teal-dim);   border-color: #0d948455; color: var(--teal);   }
+  .node-coral  { background: var(--coral-dim);  border-color: #ea580c55; color: var(--coral);  }
+  .node-amber  { background: var(--amber-dim);  border-color: #d9770655; color: var(--amber);  }
+  .node-blue   { background: var(--blue-dim);   border-color: #1d4ed855; color: var(--blue);   }
+  .node-gray   { background: #27272a; border-color: #3f3f46; color: var(--muted); }
+
+  .arrow-down { text-align: center; color: var(--dim); font-size: 20px; margin: 4px 0; }
+  .arrow-label { font-size: 10px; color: var(--dim); font-family: 'JetBrains Mono', monospace; letter-spacing: 0.05em; }
+
+  /* FILE TREE */
+  .file-tree {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 2;
+  }
+  .ft-root { color: var(--text); font-weight: 500; }
+  .ft-dir  { color: var(--blue); }
+  .ft-file { color: var(--muted); }
+  .ft-comment { color: var(--dim); font-size: 11px; margin-left: 8px; }
+  .ft-indent-1 { padding-left: 20px; }
+  .ft-indent-2 { padding-left: 40px; }
+  .ft-indent-3 { padding-left: 60px; }
+
+  /* TIMELINE */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before {
+    content: ''; position: absolute;
+    left: 0; top: 8px; bottom: 8px;
+    width: 1px; background: var(--border);
+  }
+  .tl-item { position: relative; margin-bottom: 32px; }
+  .tl-item::before {
+    content: ''; position: absolute;
+    left: -28px; top: 6px;
+    width: 9px; height: 9px;
+    border-radius: 50%; border: 1px solid;
+    background: var(--bg);
+  }
+  .tl-item.phase-1::before { border-color: var(--purple); box-shadow: 0 0 8px var(--purple); }
+  .tl-item.phase-2::before { border-color: var(--coral); box-shadow: 0 0 8px var(--coral); }
+  .tl-item.phase-3::before { border-color: var(--teal); box-shadow: 0 0 8px var(--teal); }
+  .tl-item.phase-4::before { border-color: var(--amber); box-shadow: 0 0 8px var(--amber); }
+  .tl-item.phase-5::before { border-color: var(--green); box-shadow: 0 0 8px var(--green); }
+  .tl-time {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; margin-bottom: 6px;
+  }
+  .tl-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 17px; font-weight: 700; margin-bottom: 8px;
+  }
+  .tl-tasks { list-style: none; }
+  .tl-tasks li {
+    font-size: 13px; color: var(--muted);
+    padding: 3px 0; padding-left: 16px; position: relative;
+  }
+  .tl-tasks li::before {
+    content: '→'; position: absolute; left: 0;
+    color: var(--dim); font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; top: 4px;
+  }
+  .tl-owner {
+    display: inline-block; margin-top: 8px;
+    font-size: 11px; font-family: 'JetBrains Mono', monospace;
+    padding: 2px 8px; border-radius: 3px;
+    background: var(--surface2); border: 1px solid var(--border);
+    color: var(--dim);
+  }
+
+  /* CODE BLOCKS */
+  .code-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 16px 0;
+  }
+  .code-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 10px 16px;
+    border-bottom: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--dim);
+    background: var(--surface2);
+  }
+  .code-lang { color: var(--purple); }
+  pre {
+    padding: 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+  .kw  { color: var(--purple); }
+  .fn  { color: var(--teal); }
+  .str { color: var(--amber); }
+  .cm  { color: var(--dim); font-style: italic; }
+  .cls { color: var(--coral); }
+  .num { color: var(--blue); }
+
+  /* AGENT CARDS */
+  .agent-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 16px;
+  }
+  .agent-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 20px;
+    transition: border-color 0.2s;
+  }
+  .agent-card:hover { border-color: var(--border2); }
+  .agent-icon {
+    width: 36px; height: 36px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; margin-bottom: 12px;
+    font-family: 'JetBrains Mono', monospace; font-weight: 700;
+  }
+  .agent-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px; font-weight: 700; margin-bottom: 4px;
+  }
+  .agent-desc { font-size: 12px; color: var(--muted); margin-bottom: 12px; line-height: 1.5; }
+  .agent-tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tool-pill {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; padding: 2px 8px;
+    border-radius: 3px; border: 1px solid var(--border2);
+    color: var(--dim);
+  }
+
+  /* ENV TABLE */
+  .env-table { width: 100%; border-collapse: collapse; }
+  .env-table th {
+    text-align: left; padding: 8px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: var(--dim); letter-spacing: 0.08em;
+    border-bottom: 1px solid var(--border);
+  }
+  .env-table td {
+    padding: 10px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .env-table td:first-child { color: var(--amber); }
+  .env-table td:nth-child(2) { color: var(--muted); }
+  .env-table td:last-child { color: var(--dim); font-size: 11px; }
+  .env-table tr:last-child td { border-bottom: none; }
+
+  /* TWO COL */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+  @media (max-width: 700px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* RISK TABLE */
+  .risk-row { display: flex; gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border); align-items: flex-start; }
+  .risk-row:last-child { border-bottom: none; }
+  .risk-level { font-family: 'JetBrains Mono', monospace; font-size: 10px; padding: 2px 8px; border-radius: 3px; min-width: 52px; text-align: center; }
+  .risk-high { background: #7f1d1d44; color: #fca5a5; border: 1px solid #991b1b55; }
+  .risk-mid  { background: var(--amber-dim); color: var(--amber); border: 1px solid #d9770633; }
+  .risk-low  { background: var(--green-dim); color: var(--green); border: 1px solid #16a34a33; }
+  .risk-text { flex: 1; }
+  .risk-name { font-size: 13px; font-weight: 500; margin-bottom: 3px; }
+  .risk-fix  { font-size: 12px; color: var(--muted); }
+
+  /* FOOTER */
+  .footer {
+    padding: 32px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+  }
+  .footer p { font-size: 12px; color: var(--dim); font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="track-badge">▸ HACKATHON · TRACK 2 · MARKET INTELLIGENCE</div>
+  <h1>Market Intelligence<br/><span>Engine</span></h1>
+  <p>Complete implementation blueprint — tech stack, agent architecture, file structure, and hour-by-hour build plan for a 24–48h hackathon sprint.</p>
+  <div class="meta-row">
+    <div class="meta-pill"><div class="dot" style="background:var(--purple)"></div>Next.js 14 + FastAPI</div>
+    <div class="meta-pill"><div class="dot" style="background:var(--teal)"></div>LangGraph agents</div>
+    <div class="meta-pill"><div class="dot" style="background:var(--amber)"></div>Claude claude-sonnet-4-6</div>
+    <div class="meta-pill"><div class="dot" style="background:var(--coral)"></div>Playwright scraper</div>
+    <div class="meta-pill"><div class="dot" style="background:var(--blue)"></div>SQLite → Supabase</div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 1: TECH STACK -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <span class="section-title">Complete tech stack</span>
+  </div>
+
+  <div class="stack-grid">
+    <!-- Frontend -->
+    <div class="stack-card">
+      <div class="layer-tag tag-fe">FRONTEND</div>
+      <div class="tech-name">Next.js 14</div>
+      <div class="tech-why">App Router + React Server Components. Fast to scaffold, Vercel deploy in 1 click. Use for dashboard pages.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-fe">FRONTEND</div>
+      <div class="tech-name">shadcn/ui</div>
+      <div class="tech-why">Copy-paste component library on Radix + Tailwind. Cards, tables, badges, toasts — all pre-built. Zero design time.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-fe">FRONTEND</div>
+      <div class="tech-name">Recharts</div>
+      <div class="tech-why">Competitor trend lines, positioning radar charts, insight frequency bars. Composable React charts.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-fe">FRONTEND</div>
+      <div class="tech-name">Zustand</div>
+      <div class="tech-why">Lightweight global state for selected competitor, active filters, and polling status. No Redux overhead.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-fe">FRONTEND</div>
+      <div class="tech-name">TanStack Query</div>
+      <div class="tech-why">Handles API polling, caching, and loading states. Auto-refetch every 30s to show live agent progress.</div>
+    </div>
+
+    <!-- Backend -->
+    <div class="stack-card">
+      <div class="layer-tag tag-be">BACKEND</div>
+      <div class="tech-name">FastAPI</div>
+      <div class="tech-why">Async Python REST API. Auto-generates OpenAPI docs. Pydantic models for typed request/response schemas.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-be">BACKEND</div>
+      <div class="tech-name">LangGraph</div>
+      <div class="tech-why">Stateful agent orchestration. Define agents as graph nodes with typed shared state. Full execution tracing built in.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-be">BACKEND</div>
+      <div class="tech-name">Celery + Redis</div>
+      <div class="tech-why">Background job queue for scheduled scrapes. Redis as both broker and result backend. Cron trigger support.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-be">BACKEND</div>
+      <div class="tech-name">Pydantic v2</div>
+      <div class="tech-why">Typed data models for insights, snapshots, diffs. Enforces schema at every agent boundary — no silent data rot.</div>
+    </div>
+
+    <!-- AI -->
+    <div class="stack-card">
+      <div class="layer-tag tag-ai">AI LAYER</div>
+      <div class="tech-name">Claude claude-sonnet-4-6</div>
+      <div class="tech-why">Primary insight generation model. Used in Analyst and Recommender agents. Best reasoning + structured output combo.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-ai">AI LAYER</div>
+      <div class="tech-name">Anthropic SDK</div>
+      <div class="tech-why">Tool use + structured JSON outputs. Force insight schema compliance. Citations wired back to source diffs automatically.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-ai">AI LAYER</div>
+      <div class="tech-name">LangChain tools</div>
+      <div class="tech-why">Optional: use LangChain's tool abstraction for web search enrichment (Tavily) alongside scraping.</div>
+    </div>
+
+    <!-- Scraper -->
+    <div class="stack-card">
+      <div class="layer-tag tag-scrape">SCRAPER</div>
+      <div class="tech-name">Playwright</div>
+      <div class="tech-why">Handles JS-rendered pages (React SPAs, dynamic pricing). Run headless. Block images/fonts to go 10x faster.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-scrape">SCRAPER</div>
+      <div class="tech-name">BeautifulSoup4</div>
+      <div class="tech-why">Clean HTML → semantic sections. Extract pricing tables, hero copy, feature lists. Faster than Playwright for static pages.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-scrape">SCRAPER</div>
+      <div class="tech-name">difflib</div>
+      <div class="tech-why">Python stdlib. Unified diffs between snapshots. Hash-based change detection to skip unchanged pages entirely.</div>
+    </div>
+
+    <!-- DB -->
+    <div class="stack-card">
+      <div class="layer-tag tag-db">STORAGE</div>
+      <div class="tech-name">SQLite + SQLAlchemy</div>
+      <div class="tech-why">Zero-config local DB for hackathon. Stores competitors, snapshots, diffs, insights. Swap to Supabase post-demo.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-db">STORAGE</div>
+      <div class="tech-name">Redis</div>
+      <div class="tech-why">Cache Claude responses (avoid repeat API calls on same diff). Store agent run state for real-time polling.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-db">STORAGE</div>
+      <div class="tech-name">Local filesystem</div>
+      <div class="tech-why">Raw HTML snapshots stored as .html files keyed by competitor + timestamp. Simple, no overhead, easy to inspect.</div>
+    </div>
+
+    <!-- Ops -->
+    <div class="stack-card">
+      <div class="layer-tag tag-ops">DEV / OPS</div>
+      <div class="tech-name">Docker Compose</div>
+      <div class="tech-why">One command starts FastAPI + Redis + Celery worker + Next.js. No env setup pain across team members.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-ops">DEV / OPS</div>
+      <div class="tech-name">Vercel + Railway</div>
+      <div class="tech-why">Free tier. Next.js to Vercel (1 click). FastAPI + Redis to Railway. Live demo URL ready in 10 minutes.</div>
+    </div>
+    <div class="stack-card">
+      <div class="layer-tag tag-ops">DEV / OPS</div>
+      <div class="tech-name">uv (Python pkg)</div>
+      <div class="tech-why">10–100x faster than pip. Replace pip + virtualenv with one tool. Critical when installing Playwright on a deadline.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 2: ARCHITECTURE -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <span class="section-title">System architecture</span>
+  </div>
+
+  <div class="arch-diagram">
+
+    <!-- Row: User -->
+    <div class="arch-row">
+      <div class="arch-node node-gray" style="min-width:200px">Analyst / PM (browser)</div>
+    </div>
+    <div class="arrow-down">↓ <span class="arrow-label">HTTP / REST</span></div>
+
+    <!-- Row: Frontend -->
+    <div class="arch-row">
+      <div class="arch-node node-purple">Next.js 14<br/><span style="font-size:10px;opacity:.6">Dashboard UI</span></div>
+      <div class="arch-node node-purple">Insight cards<br/><span style="font-size:10px;opacity:.6">shadcn + Recharts</span></div>
+      <div class="arch-node node-purple">Competitor view<br/><span style="font-size:10px;opacity:.6">diff + trends</span></div>
+    </div>
+    <div class="arrow-down">↓ <span class="arrow-label">fetch / TanStack Query</span></div>
+
+    <!-- Row: FastAPI -->
+    <div class="arch-row">
+      <div class="arch-node node-teal" style="min-width:320px">FastAPI — REST Gateway<br/><span style="font-size:10px;opacity:.6">POST /run-analysis · GET /insights · GET /competitors</span></div>
+    </div>
+    <div class="arrow-down">↓ <span class="arrow-label">enqueue job</span></div>
+
+    <!-- Row: Celery -->
+    <div class="arch-row">
+      <div class="arch-node node-teal">Celery worker<br/><span style="font-size:10px;opacity:.6">Redis broker</span></div>
+      <div class="arch-node node-teal">APScheduler<br/><span style="font-size:10px;opacity:.6">cron trigger</span></div>
+    </div>
+    <div class="arrow-down">↓ <span class="arrow-label">invoke graph</span></div>
+
+    <!-- Row: LangGraph orchestrator -->
+    <div class="arch-row">
+      <div class="arch-node node-purple" style="min-width:340px; font-size:13px">LangGraph Orchestrator<br/><span style="font-size:10px;opacity:.6">StateGraph — routes tasks, manages shared state</span></div>
+    </div>
+
+    <!-- Fan out to agents -->
+    <div class="arrow-down" style="letter-spacing:16px">↙ ↓ ↓ ↘</div>
+
+    <!-- Row: 4 agents -->
+    <div class="arch-fan">
+      <div class="arch-node node-coral">Scraper agent<br/><span style="font-size:10px;opacity:.6">Playwright</span></div>
+      <div class="arch-node node-coral">Diff agent<br/><span style="font-size:10px;opacity:.6">difflib</span></div>
+      <div class="arch-node node-amber">Analyst agent<br/><span style="font-size:10px;opacity:.6">Claude claude-sonnet-4-6</span></div>
+      <div class="arch-node node-amber">Scorer agent<br/><span style="font-size:10px;opacity:.6">deterministic</span></div>
+    </div>
+    <div class="arrow-down">↓ <span class="arrow-label">write to shared state</span></div>
+
+    <!-- Row: Recommender -->
+    <div class="arch-row">
+      <div class="arch-node node-teal" style="min-width:300px">Recommender agent<br/><span style="font-size:10px;opacity:.6">Claude claude-sonnet-4-6 — synthesize → action plan</span></div>
+    </div>
+    <div class="arrow-down">↓ <span class="arrow-label">persist</span></div>
+
+    <!-- Row: Storage -->
+    <div class="arch-row">
+      <div class="arch-node node-blue">SQLite<br/><span style="font-size:10px;opacity:.6">insights + diffs</span></div>
+      <div class="arch-node node-blue">Filesystem<br/><span style="font-size:10px;opacity:.6">HTML snapshots</span></div>
+      <div class="arch-node node-blue">Redis<br/><span style="font-size:10px;opacity:.6">cache + state</span></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 3: AGENT DESIGN -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <span class="section-title">Agent design</span>
+  </div>
+
+  <div class="agent-grid">
+    <div class="agent-card">
+      <div class="agent-icon" style="background:var(--coral-dim);color:var(--coral);border:1px solid #ea580c33">S</div>
+      <div class="agent-name">Scraper agent</div>
+      <div class="agent-desc">Receives a list of competitor URLs. Uses Playwright in headless mode (block images for speed). Returns cleaned text content + SHA-256 hash. Skips pages where hash matches last run.</div>
+      <div class="agent-tools">
+        <span class="tool-pill">fetch_page(url)</span>
+        <span class="tool-pill">store_snapshot()</span>
+        <span class="tool-pill">hash_content()</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-icon" style="background:var(--coral-dim);color:var(--coral);border:1px solid #ea580c33">D</div>
+      <div class="agent-name">Diff agent</div>
+      <div class="agent-desc">Loads current + previous snapshot. Runs unified diff on cleaned text sections. Filters noise (nav, footer, cookie banners). Returns only changed semantic sections — pricing, hero, features, CTAs.</div>
+      <div class="agent-tools">
+        <span class="tool-pill">load_snapshots()</span>
+        <span class="tool-pill">semantic_diff()</span>
+        <span class="tool-pill">filter_noise()</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-icon" style="background:var(--amber-dim);color:var(--amber);border:1px solid #d9770633">A</div>
+      <div class="agent-name">Analyst agent</div>
+      <div class="agent-desc">Sends diffs to Claude claude-sonnet-4-6 with a structured prompt. Forces JSON output with Pydantic schema: claim, category (pricing/messaging/feature/positioning), confidence, and source_section. No hallucination — every claim must cite its source diff.</div>
+      <div class="agent-tools">
+        <span class="tool-pill">call_claude(diff)</span>
+        <span class="tool-pill">parse_insights()</span>
+        <span class="tool-pill">attach_citations()</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-icon" style="background:var(--amber-dim);color:var(--amber);border:1px solid #d9770633">Sc</div>
+      <div class="agent-name">Scorer agent</div>
+      <div class="agent-desc">Fully deterministic — no LLM calls. Scores each insight on novelty (first time seen?), frequency (how many competitors share it?), and recency (days since first observed). Deduplicates similar insights. Returns ranked list.</div>
+      <div class="agent-tools">
+        <span class="tool-pill">score_novelty()</span>
+        <span class="tool-pill">score_frequency()</span>
+        <span class="tool-pill">deduplicate()</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-icon" style="background:var(--teal-dim);color:var(--teal);border:1px solid #0d948433">R</div>
+      <div class="agent-name">Recommender agent</div>
+      <div class="agent-desc">Final synthesis step. Reads all scored insights from shared state. Calls Claude with full context to generate: top 3 trends, identified whitespace gaps, and 3 concrete "test this next" recommendations. Returns structured report object.</div>
+      <div class="agent-tools">
+        <span class="tool-pill">synthesize(insights)</span>
+        <span class="tool-pill">identify_gaps()</span>
+        <span class="tool-pill">generate_actions()</span>
+      </div>
+    </div>
+
+    <div class="agent-card">
+      <div class="agent-icon" style="background:var(--purple-dim);color:var(--purple);border:1px solid #7c3aed33">O</div>
+      <div class="agent-name">Orchestrator (LangGraph)</div>
+      <div class="agent-desc">StateGraph that routes: Scraper → Diff → Analyst → Scorer → Recommender. Manages shared AgentState TypedDict. Handles conditional edges (skip diff if no changes). Full execution trace stored in Redis for frontend polling.</div>
+      <div class="agent-tools">
+        <span class="tool-pill">StateGraph</span>
+        <span class="tool-pill">conditional_edge</span>
+        <span class="tool-pill">checkpoint</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 4: KEY CODE SNIPPETS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <span class="section-title">Core code snippets</span>
+  </div>
+
+  <div class="two-col">
+
+    <div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px">LangGraph orchestrator setup</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">python</span>
+          <span>orchestrator.py</span>
+        </div>
+        <pre><span class="kw">from</span> langgraph.graph <span class="kw">import</span> StateGraph
+<span class="kw">from</span> typing <span class="kw">import</span> TypedDict, List
+
+<span class="kw">class</span> <span class="cls">AgentState</span>(TypedDict):
+    competitors: List[str]
+    snapshots: dict
+    diffs: dict
+    insights: List[dict]
+    scored: List[dict]
+    report: dict
+
+<span class="fn">graph</span> = StateGraph(AgentState)
+
+graph.add_node(<span class="str">"scraper"</span>, scraper_agent)
+graph.add_node(<span class="str">"diff"</span>,    diff_agent)
+graph.add_node(<span class="str">"analyst"</span>, analyst_agent)
+graph.add_node(<span class="str">"scorer"</span>,  scorer_agent)
+graph.add_node(<span class="str">"recommender"</span>, recommender_agent)
+
+graph.set_entry_point(<span class="str">"scraper"</span>)
+graph.add_edge(<span class="str">"scraper"</span>,  <span class="str">"diff"</span>)
+graph.add_edge(<span class="str">"diff"</span>,     <span class="str">"analyst"</span>)
+graph.add_edge(<span class="str">"analyst"</span>,  <span class="str">"scorer"</span>)
+graph.add_edge(<span class="str">"scorer"</span>,   <span class="str">"recommender"</span>)
+
+<span class="fn">app</span> = graph.compile()</pre>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Analyst agent — Claude structured output</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">python</span>
+          <span>analyst_agent.py</span>
+        </div>
+        <pre><span class="kw">import</span> anthropic
+<span class="kw">from</span> pydantic <span class="kw">import</span> BaseModel
+
+<span class="kw">class</span> <span class="cls">Insight</span>(BaseModel):
+    claim: str
+    category: str  <span class="cm"># pricing/messaging/feature</span>
+    confidence: float
+    source_section: str
+
+<span class="kw">def</span> <span class="fn">analyst_agent</span>(state: AgentState):
+    client = anthropic.Anthropic()
+    insights = []
+    <span class="kw">for</span> comp, diff <span class="kw">in</span> state[<span class="str">"diffs"</span>].items():
+        resp = client.messages.create(
+            model=<span class="str">"claude-sonnet-4-20250514"</span>,
+            max_tokens=<span class="num">1000</span>,
+            system=ANALYST_PROMPT,
+            messages=[{<span class="str">"role"</span>:<span class="str">"user"</span>,
+                       <span class="str">"content"</span>: diff}]
+        )
+        <span class="cm"># parse JSON → Insight objects</span>
+        parsed = parse_insights(resp, comp)
+        insights.extend(parsed)
+    <span class="kw">return</span> {<span class="str">"insights"</span>: insights}</pre>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px">Scraper agent — Playwright</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">python</span>
+          <span>scraper_agent.py</span>
+        </div>
+        <pre><span class="kw">from</span> playwright.async_api <span class="kw">import</span> async_playwright
+<span class="kw">import</span> hashlib
+
+<span class="kw">async def</span> <span class="fn">fetch_page</span>(url: str) -> dict:
+    <span class="kw">async with</span> async_playwright() <span class="kw">as</span> p:
+        browser = <span class="kw">await</span> p.chromium.launch()
+        page = <span class="kw">await</span> browser.new_page()
+        <span class="cm"># Block images/fonts for speed</span>
+        <span class="kw">await</span> page.route(<span class="str">"**/*.{png,jpg,woff}"</span>,
+            <span class="kw">lambda</span> r: r.abort())
+        <span class="kw">await</span> page.goto(url, timeout=<span class="num">15000</span>)
+        html = <span class="kw">await</span> page.content()
+        text = extract_semantic(html)
+        <span class="kw">return</span> {
+            <span class="str">"url"</span>: url,
+            <span class="str">"text"</span>: text,
+            <span class="str">"hash"</span>: hashlib.sha256(
+                text.encode()).hexdigest()
+        }</pre>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:13px;color:var(--muted);margin-bottom:8px">FastAPI — trigger endpoint</p>
+      <div class="code-block">
+        <div class="code-header">
+          <span class="code-lang">python</span>
+          <span>main.py</span>
+        </div>
+        <pre><span class="kw">from</span> fastapi <span class="kw">import</span> FastAPI
+<span class="kw">from</span> celery_app <span class="kw">import</span> run_analysis
+
+<span class="fn">api</span> = FastAPI()
+
+@api.post(<span class="str">"/run-analysis"</span>)
+<span class="kw">async def</span> <span class="fn">trigger</span>(body: AnalysisRequest):
+    task = run_analysis.delay(
+        competitors=body.competitors
+    )
+    <span class="kw">return</span> {<span class="str">"task_id"</span>: task.id}
+
+@api.get(<span class="str">"/insights"</span>)
+<span class="kw">async def</span> <span class="fn">get_insights</span>(competitor: str = <span class="kw">None</span>):
+    <span class="kw">return</span> db.query_insights(competitor)
+
+@api.get(<span class="str">"/status/{task_id}"</span>)
+<span class="kw">async def</span> <span class="fn">get_status</span>(task_id: str):
+    <span class="cm"># Frontend polls this for live progress</span>
+    <span class="kw">return</span> celery.AsyncResult(task_id).state</pre>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 5: FILE STRUCTURE -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <span class="section-title">Project file structure</span>
+  </div>
+
+  <div class="two-col">
+    <div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace">Backend (Python / FastAPI)</p>
+      <div class="file-tree">
+        <div class="ft-root">backend/</div>
+        <div class="ft-indent-1"><span class="ft-dir">agents/</span></div>
+        <div class="ft-indent-2"><span class="ft-file">orchestrator.py</span><span class="ft-comment">LangGraph graph</span></div>
+        <div class="ft-indent-2"><span class="ft-file">scraper_agent.py</span><span class="ft-comment">Playwright</span></div>
+        <div class="ft-indent-2"><span class="ft-file">diff_agent.py</span><span class="ft-comment">difflib</span></div>
+        <div class="ft-indent-2"><span class="ft-file">analyst_agent.py</span><span class="ft-comment">Claude calls</span></div>
+        <div class="ft-indent-2"><span class="ft-file">scorer_agent.py</span><span class="ft-comment">deterministic</span></div>
+        <div class="ft-indent-2"><span class="ft-file">recommender_agent.py</span></div>
+        <div class="ft-indent-1"><span class="ft-dir">api/</span></div>
+        <div class="ft-indent-2"><span class="ft-file">main.py</span><span class="ft-comment">FastAPI app</span></div>
+        <div class="ft-indent-2"><span class="ft-file">routes.py</span><span class="ft-comment">endpoints</span></div>
+        <div class="ft-indent-2"><span class="ft-file">schemas.py</span><span class="ft-comment">Pydantic models</span></div>
+        <div class="ft-indent-1"><span class="ft-dir">db/</span></div>
+        <div class="ft-indent-2"><span class="ft-file">models.py</span><span class="ft-comment">SQLAlchemy</span></div>
+        <div class="ft-indent-2"><span class="ft-file">crud.py</span></div>
+        <div class="ft-indent-2"><span class="ft-file">database.py</span><span class="ft-comment">SQLite conn</span></div>
+        <div class="ft-indent-1"><span class="ft-dir">snapshots/</span><span class="ft-comment">raw HTML files</span></div>
+        <div class="ft-indent-1"><span class="ft-file">celery_app.py</span><span class="ft-comment">worker + tasks</span></div>
+        <div class="ft-indent-1"><span class="ft-file">prompts.py</span><span class="ft-comment">all LLM prompts</span></div>
+        <div class="ft-indent-1"><span class="ft-file">requirements.txt</span></div>
+        <div class="ft-indent-1"><span class="ft-file">Dockerfile</span></div>
+      </div>
+    </div>
+
+    <div>
+      <p style="font-size:12px;color:var(--muted);margin-bottom:12px;font-family:'JetBrains Mono',monospace">Frontend (Next.js 14)</p>
+      <div class="file-tree">
+        <div class="ft-root">frontend/</div>
+        <div class="ft-indent-1"><span class="ft-dir">app/</span><span class="ft-comment">App Router</span></div>
+        <div class="ft-indent-2"><span class="ft-file">page.tsx</span><span class="ft-comment">dashboard home</span></div>
+        <div class="ft-indent-2"><span class="ft-dir">insights/</span></div>
+        <div class="ft-indent-3"><span class="ft-file">page.tsx</span><span class="ft-comment">insight feed</span></div>
+        <div class="ft-indent-2"><span class="ft-dir">competitors/</span></div>
+        <div class="ft-indent-3"><span class="ft-file">page.tsx</span><span class="ft-comment">competitor matrix</span></div>
+        <div class="ft-indent-1"><span class="ft-dir">components/</span></div>
+        <div class="ft-indent-2"><span class="ft-file">InsightCard.tsx</span></div>
+        <div class="ft-indent-2"><span class="ft-file">TrendChart.tsx</span><span class="ft-comment">Recharts</span></div>
+        <div class="ft-indent-2"><span class="ft-file">CompetitorMatrix.tsx</span></div>
+        <div class="ft-indent-2"><span class="ft-file">AgentStatus.tsx</span><span class="ft-comment">live polling</span></div>
+        <div class="ft-indent-2"><span class="ft-file">DiffViewer.tsx</span><span class="ft-comment">source trace</span></div>
+        <div class="ft-indent-1"><span class="ft-dir">lib/</span></div>
+        <div class="ft-indent-2"><span class="ft-file">api.ts</span><span class="ft-comment">fetch wrappers</span></div>
+        <div class="ft-indent-2"><span class="ft-file">store.ts</span><span class="ft-comment">Zustand</span></div>
+        <div class="ft-indent-2"><span class="ft-file">types.ts</span><span class="ft-comment">shared types</span></div>
+        <div class="ft-indent-1"><span class="ft-file">docker-compose.yml</span></div>
+        <div class="ft-indent-1"><span class="ft-file">.env.local</span></div>
+        <div class="ft-indent-1"><span class="ft-file">package.json</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 6: ENV VARS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <span class="section-title">Environment variables</span>
+  </div>
+
+  <div class="code-block">
+    <div class="code-header">
+      <span class="code-lang">env</span>
+      <span>.env</span>
+    </div>
+    <table class="env-table" style="width:100%">
+      <tr><th>Variable</th><th>Value</th><th>Notes</th></tr>
+      <tr><td>ANTHROPIC_API_KEY</td><td>sk-ant-...</td><td>Required for Analyst + Recommender agents</td></tr>
+      <tr><td>REDIS_URL</td><td>redis://localhost:6379</td><td>Celery broker + cache</td></tr>
+      <tr><td>DATABASE_URL</td><td>sqlite:///./intel.db</td><td>Swap to postgres:// post-demo</td></tr>
+      <tr><td>SNAPSHOT_DIR</td><td>./snapshots</td><td>Raw HTML file storage path</td></tr>
+      <tr><td>NEXT_PUBLIC_API_URL</td><td>http://localhost:8000</td><td>Frontend → backend base URL</td></tr>
+      <tr><td>COMPETITORS</td><td>notion.so,linear.app,asana.com</td><td>Comma-separated seed URLs</td></tr>
+      <tr><td>SCRAPE_INTERVAL_MINS</td><td>60</td><td>Celery beat schedule</td></tr>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 7: IMPLEMENTATION TIMELINE -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <span class="section-title">Hour-by-hour build plan</span>
+  </div>
+
+  <div class="timeline">
+
+    <div class="tl-item phase-1">
+      <div class="tl-time" style="color:var(--purple)">HOURS 0–4 — Foundation</div>
+      <div class="tl-title">Project scaffold + scraper working</div>
+      <ul class="tl-tasks">
+        <li>Create mono-repo: <code style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:11px">frontend/</code> + <code style="color:var(--teal);font-family:'JetBrains Mono',monospace;font-size:11px">backend/</code></li>
+        <li>Run <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">npx create-next-app frontend</code> with TypeScript + Tailwind</li>
+        <li>Run <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--amber)">uv init backend && uv add fastapi langgraph anthropic playwright</code></li>
+        <li>Write <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">docker-compose.yml</code> with FastAPI + Redis services</li>
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">scraper_agent.py</code> — scrape 3 pre-chosen URLs, store HTML to disk</li>
+        <li>Verify: run scraper manually, confirm HTML files appear</li>
+      </ul>
+      <span class="tl-owner">👤 Backend person</span>
+      <span class="tl-owner" style="margin-left:8px">👤 Frontend person → install Next.js + shadcn</span>
+    </div>
+
+    <div class="tl-item phase-2">
+      <div class="tl-time" style="color:var(--coral)">HOURS 4–10 — Core pipeline</div>
+      <div class="tl-title">Diff + Analyst agents + LangGraph wiring</div>
+      <ul class="tl-tasks">
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">diff_agent.py</code> — compare snapshots, filter nav/footer noise, return semantic diffs</li>
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">analyst_agent.py</code> — write Claude prompt, enforce JSON output with Pydantic</li>
+        <li>Wire LangGraph: Scraper → Diff → Analyst in <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">orchestrator.py</code></li>
+        <li>Test end-to-end: run graph manually, inspect insight JSON output</li>
+        <li>Frontend: build dashboard shell — sidebar nav, empty insight card grid</li>
+        <li>Frontend: wire <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">TrendChart.tsx</code> with mock data</li>
+      </ul>
+      <span class="tl-owner">👤 Backend — agent pipeline</span>
+      <span class="tl-owner" style="margin-left:8px">👤 Frontend — dashboard shell</span>
+    </div>
+
+    <div class="tl-item phase-3">
+      <div class="tl-time" style="color:var(--teal)">HOURS 10–18 — Intelligence layer</div>
+      <div class="tl-title">Scorer + Recommender + FastAPI + DB</div>
+      <ul class="tl-tasks">
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">scorer_agent.py</code> — novelty score, frequency score, deduplication</li>
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">recommender_agent.py</code> — synthesis prompt, whitespace detection, action items</li>
+        <li>Complete LangGraph graph: add Scorer + Recommender nodes</li>
+        <li>Build FastAPI routes: POST /run-analysis, GET /insights, GET /status/:id</li>
+        <li>SQLite schema: competitors, snapshots, insights, reports tables</li>
+        <li>Frontend: <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">InsightCard.tsx</code> — shows claim, category badge, source citation, score</li>
+        <li>Frontend: <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">AgentStatus.tsx</code> — polls /status every 2s, shows live progress</li>
+      </ul>
+      <span class="tl-owner">👤 Backend — full pipeline</span>
+      <span class="tl-owner" style="margin-left:8px">👤 Frontend — insight UI</span>
+    </div>
+
+    <div class="tl-item phase-4">
+      <div class="tl-time" style="color:var(--amber)">HOURS 18–30 — Integration + polish</div>
+      <div class="tl-title">Connect frontend to real API, pre-cache demo data</div>
+      <ul class="tl-tasks">
+        <li>Connect Next.js to FastAPI — replace mock data with real /insights calls</li>
+        <li>Run the full pipeline against 3 real competitors, store results</li>
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">CompetitorMatrix.tsx</code> — side-by-side positioning comparison grid</li>
+        <li>Build <code style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--teal)">DiffViewer.tsx</code> — show raw diff source for any insight (traceability)</li>
+        <li>Add Celery beat for scheduled scraping (60min interval)</li>
+        <li>Polish: loading skeletons, error states, empty states</li>
+        <li>Pre-cache 2 full analysis runs so demo doesn't depend on live scraping</li>
+      </ul>
+      <span class="tl-owner">👤 Full team integration sprint</span>
+    </div>
+
+    <div class="tl-item phase-5">
+      <div class="tl-time" style="color:var(--green)">HOURS 30–48 — Demo prep + deploy</div>
+      <div class="tl-title">Deploy, rehearse, hardening</div>
+      <ul class="tl-tasks">
+        <li>Deploy Next.js to Vercel (free) — get live URL</li>
+        <li>Deploy FastAPI + Redis to Railway (free tier) — get API URL</li>
+        <li>Set NEXT_PUBLIC_API_URL to Railway URL in Vercel env vars</li>
+        <li>Rehearse demo flow: show pre-cached insights → trigger new analysis → watch live progress → show recommendations</li>
+        <li>Prepare 2-minute pitch: problem → solution → live demo → impact</li>
+        <li>Write fallback: if live scraping fails, demo loads from pre-cached DB</li>
+      </ul>
+      <span class="tl-owner">👤 Full team</span>
+    </div>
+
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════ -->
+<!-- SECTION 8: RISKS -->
+<!-- ══════════════════════════════════════════ -->
+<div class="section">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <span class="section-title">Top risks + mitigations</span>
+  </div>
+
+  <div class="risk-row">
+    <div class="risk-level risk-high">HIGH</div>
+    <div class="risk-text">
+      <div class="risk-name">Scraping blocked during live demo</div>
+      <div class="risk-fix">Fix: Pre-run full analysis 12h before demo. Store results in DB. Demo reads from cache — live scraping is a bonus, not a dependency.</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-level risk-high">HIGH</div>
+    <div class="risk-text">
+      <div class="risk-name">Claude returns unstructured / hallucinated insights</div>
+      <div class="risk-fix">Fix: Force JSON schema with <code style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--teal)">response_format</code>. Every claim must include source_section from the diff. If source_section is empty, discard the insight.</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-level risk-mid">MED</div>
+    <div class="risk-text">
+      <div class="risk-name">LangGraph state gets corrupted mid-run</div>
+      <div class="risk-fix">Fix: Use LangGraph's built-in SQLite checkpointing. Each node writes state atomically. Failed runs restart from last checkpoint.</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-level risk-mid">MED</div>
+    <div class="risk-text">
+      <div class="risk-name">Team blocked on integration at hour 20</div>
+      <div class="risk-fix">Fix: Define FastAPI response schemas (TypeScript types) in hour 2. Frontend builds against mock JSON that matches the real schema from day 1.</div>
+    </div>
+  </div>
+  <div class="risk-row">
+    <div class="risk-level risk-low">LOW</div>
+    <div class="risk-text">
+      <div class="risk-name">Redis not available in demo environment</div>
+      <div class="risk-fix">Fix: Celery can run with <code style="font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--teal)">task_always_eager=True</code> for synchronous fallback. No Redis needed for basic demo.</div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <p>market-intelligence-engine · hackathon build plan</p>
+  <p>generated for Track 2 · 24–48h sprint</p>
+</div>
+
+</body>
+</html>

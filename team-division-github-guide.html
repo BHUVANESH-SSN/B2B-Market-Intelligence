@@ -1,0 +1,1071 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Market Intelligence Engine — Team Division & GitHub Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Fira+Code:wght@400;500&family=Clash+Display:wght@600;700&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg: #0a0a0f;
+  --surface: #13131a;
+  --surface2: #1c1c26;
+  --border: #2a2a3a;
+  --border2: #3d3d55;
+  --text: #f0f0ff;
+  --muted: #8888aa;
+  --dim: #44445a;
+
+  --p1: #ff6b6b;   /* Person 1 - Frontend - red/coral */
+  --p1-dim: #ff6b6b18;
+  --p1-border: #ff6b6b33;
+
+  --p2: #4ecdc4;   /* Person 2 - Backend - teal */
+  --p2-dim: #4ecdc418;
+  --p2-border: #4ecdc433;
+
+  --p3: #ffe66d;   /* Person 3 - Scraper/Diff - yellow */
+  --p3-dim: #ffe66d18;
+  --p3-border: #ffe66d33;
+
+  --p4: #a29bfe;   /* Person 4 - AI/Intelligence - purple */
+  --p4-dim: #a29bfe18;
+  --p4-border: #a29bfe33;
+
+  --github: #79c0ff;
+  --github-dim: #79c0ff15;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  font-size: 14px;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: 56px 48px 44px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+  background: radial-gradient(ellipse 70% 50% at 20% -10%, #ff6b6b0a, transparent),
+              radial-gradient(ellipse 60% 40% at 80% 110%, #a29bfe0a, transparent);
+}
+.badge {
+  display: inline-block;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  color: var(--muted);
+  border: 1px solid var(--border2);
+  padding: 3px 10px;
+  border-radius: 3px;
+  margin-bottom: 18px;
+  background: var(--surface);
+}
+.hero h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(26px, 4.5vw, 46px);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  margin-bottom: 12px;
+}
+.hero h1 .accent { 
+  background: linear-gradient(90deg, var(--p1), var(--p4));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.hero p { color: var(--muted); font-size: 15px; max-width: 560px; }
+
+.pill-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 24px; }
+.pill {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid;
+}
+.pill-1 { color: var(--p1); background: var(--p1-dim); border-color: var(--p1-border); }
+.pill-2 { color: var(--p2); background: var(--p2-dim); border-color: var(--p2-border); }
+.pill-3 { color: var(--p3); background: var(--p3-dim); border-color: var(--p3-border); }
+.pill-4 { color: var(--p4); background: var(--p4-dim); border-color: var(--p4-border); }
+.pill-g { color: var(--github); background: var(--github-dim); border-color: #79c0ff33; }
+
+/* ─── SECTION ─── */
+.section { padding: 44px 48px; border-bottom: 1px solid var(--border); }
+.sec-header {
+  display: flex; align-items: center; gap: 12px; margin-bottom: 28px;
+}
+.sec-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; color: var(--dim);
+  letter-spacing: 0.1em;
+}
+.sec-title {
+  font-size: 20px; font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* ─── OVERVIEW GRID ─── */
+.overview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px;
+}
+.ov-card {
+  border-radius: 12px;
+  border: 1px solid;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s;
+}
+.ov-card:hover { transform: translateY(-3px); }
+.ov-card .person-num {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; letter-spacing: 0.1em;
+  margin-bottom: 10px;
+}
+.ov-card .person-role {
+  font-size: 17px; font-weight: 700; margin-bottom: 6px;
+  letter-spacing: -0.02em;
+}
+.ov-card .person-focus {
+  font-size: 12px; color: var(--muted); line-height: 1.5;
+}
+.ov-card .person-tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 12px; }
+.ov-card .tag {
+  font-family: 'Fira Code', monospace;
+  font-size: 9px; padding: 2px 7px;
+  border-radius: 3px;
+  border: 1px solid var(--border2);
+  color: var(--dim);
+}
+.ov-1 { background: var(--p1-dim); border-color: var(--p1-border); }
+.ov-1 .person-num, .ov-1 .person-role { color: var(--p1); }
+.ov-2 { background: var(--p2-dim); border-color: var(--p2-border); }
+.ov-2 .person-num, .ov-2 .person-role { color: var(--p2); }
+.ov-3 { background: var(--p3-dim); border-color: var(--p3-border); }
+.ov-3 .person-num, .ov-3 .person-role { color: var(--p3); }
+.ov-4 { background: var(--p4-dim); border-color: var(--p4-border); }
+.ov-4 .person-num, .ov-4 .person-role { color: var(--p4); }
+
+/* ─── PERSON DETAILS ─── */
+.person-block {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+.person-header {
+  padding: 18px 24px;
+  display: flex; align-items: center; gap: 14px;
+  border-bottom: 1px solid var(--border);
+}
+.person-avatar {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; font-weight: 700;
+  font-family: 'Fira Code', monospace;
+  flex-shrink: 0;
+}
+.person-header-info h3 {
+  font-size: 16px; font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.person-header-info p {
+  font-size: 11px; color: var(--muted);
+  font-family: 'Fira Code', monospace; margin-top: 2px;
+}
+.person-body { padding: 20px 24px; }
+.person-cols { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+@media (max-width: 650px) { .person-cols { grid-template-columns: 1fr; } }
+
+.task-group h4 {
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+  font-family: 'Fira Code', monospace;
+}
+.task-list { list-style: none; }
+.task-list li {
+  font-size: 12px; color: var(--muted);
+  padding: 5px 0 5px 16px;
+  position: relative;
+  border-bottom: 1px solid var(--border);
+  line-height: 1.4;
+}
+.task-list li:last-child { border-bottom: none; }
+.task-list li::before {
+  content: '→';
+  position: absolute; left: 0;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; top: 6px;
+}
+
+.file-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 12px; }
+.file-chip {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--muted);
+}
+
+.branch-chip {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  padding: 4px 12px;
+  border-radius: 20px;
+  border: 1px solid;
+  display: inline-flex; align-items: center; gap: 6px;
+}
+
+/* Person color helpers */
+.c1 { color: var(--p1); }
+.c2 { color: var(--p2); }
+.c3 { color: var(--p3); }
+.c4 { color: var(--p4); }
+
+.av1 { background: var(--p1-dim); border: 1px solid var(--p1-border); color: var(--p1); }
+.av2 { background: var(--p2-dim); border: 1px solid var(--p2-border); color: var(--p2); }
+.av3 { background: var(--p3-dim); border: 1px solid var(--p3-border); color: var(--p3); }
+.av4 { background: var(--p4-dim); border: 1px solid var(--p4-border); color: var(--p4); }
+
+.ph1 { border-color: var(--p1-border); }
+.ph2 { border-color: var(--p2-border); }
+.ph3 { border-color: var(--p3-border); }
+.ph4 { border-color: var(--p4-border); }
+
+/* ─── TIMELINE ─── */
+.timeline-table { width: 100%; border-collapse: collapse; }
+.timeline-table th {
+  text-align: left; padding: 10px 14px;
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; color: var(--dim);
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid var(--border);
+}
+.timeline-table td {
+  padding: 10px 14px;
+  font-size: 12px;
+  border-bottom: 1px solid var(--border);
+  vertical-align: top;
+}
+.timeline-table tr:last-child td { border-bottom: none; }
+.phase-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 10px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+}
+
+/* ─── GITHUB ─── */
+.github-section { background: var(--surface); border-radius: 14px; padding: 28px; }
+.gh-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+.gh-card {
+  flex: 1; min-width: 200px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px;
+}
+.gh-card h4 {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: var(--github);
+  margin-bottom: 10px; letter-spacing: 0.05em;
+}
+.gh-card p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.code-block {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 16px 0;
+}
+.code-header {
+  display: flex; justify-content: space-between;
+  padding: 8px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+  font-family: 'Fira Code', monospace;
+  font-size: 10px; color: var(--dim);
+}
+.code-header .lang { color: var(--github); }
+pre {
+  padding: 16px;
+  font-family: 'Fira Code', monospace;
+  font-size: 12px; line-height: 1.8;
+  color: var(--muted);
+  overflow-x: auto;
+}
+.kw { color: #ff79c6; }
+.cm { color: var(--dim); font-style: italic; }
+.str { color: #f1fa8c; }
+.br { color: var(--github); }
+.fn { color: #50fa7b; }
+
+/* ─── BRANCH DIAGRAM ─── */
+.branch-diagram {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 24px;
+  overflow-x: auto;
+}
+.branch-line {
+  display: flex; align-items: center; gap: 0;
+  margin-bottom: 6px;
+  position: relative;
+}
+.b-node {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  border: 2px solid;
+  flex-shrink: 0;
+}
+.b-line {
+  height: 2px; flex: 1;
+}
+.b-label {
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  margin-left: 10px;
+  white-space: nowrap;
+}
+.b-commit {
+  font-size: 10px; color: var(--dim);
+  font-family: 'Fira Code', monospace;
+  margin-left: 6px;
+}
+
+/* ─── README TEMPLATE ─── */
+.readme-preview {
+  background: #0d1117;
+  border: 1px solid #30363d;
+  border-radius: 10px;
+  padding: 24px;
+}
+.readme-preview h1 {
+  color: #e6edf3;
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 12px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #21262d;
+}
+.readme-preview h2 {
+  color: #e6edf3;
+  font-size: 15px;
+  font-weight: 600;
+  margin: 20px 0 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid #21262d;
+}
+.readme-preview p {
+  color: #8b949e;
+  font-size: 13px;
+  line-height: 1.6;
+  margin-bottom: 10px;
+}
+.readme-preview code {
+  background: #161b22;
+  border: 1px solid #30363d;
+  border-radius: 4px;
+  padding: 1px 6px;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px;
+  color: #f0883e;
+}
+.readme-preview .badge-row { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 14px; }
+.readme-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 10px;
+  font-family: 'Fira Code', monospace;
+}
+.rb-next { background: #000; color: #fff; border: 1px solid #333; }
+.rb-fast { background: #009688; color: #fff; }
+.rb-claude { background: #d97706; color: #fff; }
+.rb-docker { background: #2496ed; color: #fff; }
+
+/* ─── PR WORKFLOW ─── */
+.pr-flow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin: 16px 0; }
+.pr-step {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12px;
+}
+.pr-step .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.pr-arrow { color: var(--dim); font-size: 16px; }
+
+/* ─── CHECKLIST ─── */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex; align-items: flex-start; gap: 10px;
+  padding: 7px 0;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+}
+.checklist li:last-child { border-bottom: none; }
+.check-box {
+  width: 16px; height: 16px;
+  border: 1px solid var(--border2);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+  display: flex; align-items: center; justify-content: center;
+}
+.check-done { background: #16a34a22; border-color: #16a34a55; }
+.check-done::after { content: '✓'; font-size: 10px; color: #4ade80; }
+
+.footer {
+  padding: 28px 48px;
+  display: flex; justify-content: space-between;
+  font-family: 'Fira Code', monospace;
+  font-size: 11px; color: var(--dim);
+  flex-wrap: wrap; gap: 12px;
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<div class="hero">
+  <div class="badge">▸ MARKET INTELLIGENCE ENGINE · TEAM DIVISION GUIDE</div>
+  <h1>4-Person Team<br/><span class="accent">Division Plan + GitHub</span></h1>
+  <p>How to split the Market Intelligence Engine across 4 developers, with GitHub repo setup, branching strategy, and integration workflow.</p>
+  <div class="pill-row">
+    <span class="pill pill-1">👤 Person 1 — Frontend</span>
+    <span class="pill pill-2">👤 Person 2 — Backend/API</span>
+    <span class="pill pill-3">👤 Person 3 — Scraper & Diff</span>
+    <span class="pill pill-4">👤 Person 4 — AI Agents</span>
+    <span class="pill pill-g">📁 GitHub Integration</span>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SECTION 1: OVERVIEW ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">01</span>
+    <span class="sec-title">Team Overview</span>
+  </div>
+
+  <div class="overview-grid">
+    <div class="ov-card ov-1">
+      <div class="person-num">PERSON 1</div>
+      <div class="person-role">Frontend Developer</div>
+      <div class="person-focus">Owns the entire Next.js dashboard. All UI components, charts, API wiring, and deployment to Vercel.</div>
+      <div class="person-tags">
+        <span class="tag">Next.js 14</span>
+        <span class="tag">shadcn/ui</span>
+        <span class="tag">Recharts</span>
+        <span class="tag">TanStack Query</span>
+        <span class="tag">Zustand</span>
+        <span class="tag">TypeScript</span>
+      </div>
+    </div>
+    <div class="ov-card ov-2">
+      <div class="person-num">PERSON 2</div>
+      <div class="person-role">Backend / API Developer</div>
+      <div class="person-focus">Owns FastAPI, database schema, Celery workers, Redis, Docker Compose, and Railway deployment.</div>
+      <div class="person-tags">
+        <span class="tag">FastAPI</span>
+        <span class="tag">SQLite/SQLAlchemy</span>
+        <span class="tag">Celery + Redis</span>
+        <span class="tag">Pydantic v2</span>
+        <span class="tag">Docker</span>
+      </div>
+    </div>
+    <div class="ov-card ov-3">
+      <div class="person-num">PERSON 3</div>
+      <div class="person-role">Scraper & Diff Engineer</div>
+      <div class="person-focus">Owns Playwright scraping, HTML snapshot storage, semantic diffing, and noise filtering between snapshots.</div>
+      <div class="person-tags">
+        <span class="tag">Playwright</span>
+        <span class="tag">BeautifulSoup4</span>
+        <span class="tag">difflib</span>
+        <span class="tag">async Python</span>
+      </div>
+    </div>
+    <div class="ov-card ov-4">
+      <div class="person-num">PERSON 4</div>
+      <div class="person-role">AI / Intelligence Engineer</div>
+      <div class="person-focus">Owns all LLM agents (Analyst, Scorer, Recommender), LangGraph orchestration, prompts, and structured output schemas.</div>
+      <div class="person-tags">
+        <span class="tag">LangGraph</span>
+        <span class="tag">Claude API</span>
+        <span class="tag">Anthropic SDK</span>
+        <span class="tag">Pydantic schemas</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SECTION 2: PERSON DETAILS ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">02</span>
+    <span class="sec-title">Detailed Role Breakdown</span>
+  </div>
+
+  <!-- ── PERSON 1 ── -->
+  <div class="person-block ph1">
+    <div class="person-header">
+      <div class="person-avatar av1">P1</div>
+      <div class="person-header-info">
+        <h3 class="c1">Person 1 — Frontend Developer</h3>
+        <p>Branch: feature/frontend · Deploy: Vercel</p>
+      </div>
+    </div>
+    <div class="person-body">
+      <div class="person-cols">
+        <div class="task-group">
+          <h4>Hours 0–4 (Foundation)</h4>
+          <ul class="task-list">
+            <li>Run <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p3)">npx create-next-app frontend</code> with TypeScript + Tailwind</li>
+            <li>Install shadcn/ui and configure components.json</li>
+            <li>Set up folder structure: app/, components/, lib/</li>
+            <li>Create <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p2)">types.ts</code> — agree with Person 2 on shared response schemas</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 4–10</h4>
+          <ul class="task-list">
+            <li>Build dashboard shell — sidebar navigation layout</li>
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p1)">TrendChart.tsx</code> with Recharts (mock data first)</li>
+            <li>Empty insight card grid with loading skeletons</li>
+          </ul>
+        </div>
+        <div class="task-group">
+          <h4>Hours 10–18</h4>
+          <ul class="task-list">
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p1)">InsightCard.tsx</code> — claim, badge, score, citation</li>
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p1)">AgentStatus.tsx</code> — polls /status every 2s, live progress bar</li>
+            <li>Set up TanStack Query + Zustand store</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 18–30 (Integration)</h4>
+          <ul class="task-list">
+            <li>Replace all mock data with real FastAPI calls</li>
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p1)">CompetitorMatrix.tsx</code> side-by-side grid</li>
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p1)">DiffViewer.tsx</code> — trace insight back to source diff</li>
+            <li>Error states, empty states, loading polish</li>
+            <li>Deploy to Vercel, set NEXT_PUBLIC_API_URL env var</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="task-group"><h4>Files You Own</h4></div>
+        <div class="file-chips">
+          <span class="file-chip">frontend/app/page.tsx</span>
+          <span class="file-chip">frontend/app/insights/page.tsx</span>
+          <span class="file-chip">frontend/app/competitors/page.tsx</span>
+          <span class="file-chip">frontend/components/InsightCard.tsx</span>
+          <span class="file-chip">frontend/components/TrendChart.tsx</span>
+          <span class="file-chip">frontend/components/CompetitorMatrix.tsx</span>
+          <span class="file-chip">frontend/components/AgentStatus.tsx</span>
+          <span class="file-chip">frontend/components/DiffViewer.tsx</span>
+          <span class="file-chip">frontend/lib/api.ts</span>
+          <span class="file-chip">frontend/lib/store.ts</span>
+          <span class="file-chip">frontend/lib/types.ts</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PERSON 2 ── -->
+  <div class="person-block ph2">
+    <div class="person-header">
+      <div class="person-avatar av2">P2</div>
+      <div class="person-header-info">
+        <h3 class="c2">Person 2 — Backend / API Developer</h3>
+        <p>Branch: feature/backend-api · Deploy: Railway</p>
+      </div>
+    </div>
+    <div class="person-body">
+      <div class="person-cols">
+        <div class="task-group">
+          <h4>Hours 0–4 (Foundation)</h4>
+          <ul class="task-list">
+            <li>Run <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p3)">uv init backend && uv add fastapi celery redis sqlalchemy</code></li>
+            <li>Write <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p2)">docker-compose.yml</code> — FastAPI + Redis + Celery services</li>
+            <li>Define <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p2)">schemas.py</code> Pydantic models (share with Person 1 immediately!)</li>
+            <li>Set up SQLite + SQLAlchemy in db/database.py</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 4–10</h4>
+          <ul class="task-list">
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p2)">main.py</code> with placeholder routes returning mock data</li>
+            <li>Create SQLite tables: competitors, snapshots, insights, reports</li>
+            <li>Set up Celery app + Redis broker in celery_app.py</li>
+          </ul>
+        </div>
+        <div class="task-group">
+          <h4>Hours 10–18</h4>
+          <ul class="task-list">
+            <li>Wire POST /run-analysis → Celery task → LangGraph invoke</li>
+            <li>Wire GET /insights with competitor filter + pagination</li>
+            <li>Wire GET /status/:task_id from Celery AsyncResult</li>
+            <li>Build crud.py — save/query insights from DB</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 18–30</h4>
+          <ul class="task-list">
+            <li>Add Celery beat scheduler (60min scrape interval)</li>
+            <li>Add CORS headers so Next.js can call the API</li>
+            <li>Configure Railway deployment + env vars</li>
+            <li>Test all endpoints work with Person 1's frontend</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="task-group"><h4>Files You Own</h4></div>
+        <div class="file-chips">
+          <span class="file-chip">backend/api/main.py</span>
+          <span class="file-chip">backend/api/routes.py</span>
+          <span class="file-chip">backend/api/schemas.py</span>
+          <span class="file-chip">backend/db/models.py</span>
+          <span class="file-chip">backend/db/crud.py</span>
+          <span class="file-chip">backend/db/database.py</span>
+          <span class="file-chip">backend/celery_app.py</span>
+          <span class="file-chip">docker-compose.yml</span>
+          <span class="file-chip">backend/Dockerfile</span>
+          <span class="file-chip">backend/requirements.txt</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PERSON 3 ── -->
+  <div class="person-block ph3">
+    <div class="person-header">
+      <div class="person-avatar av3">P3</div>
+      <div class="person-header-info">
+        <h3 class="c3">Person 3 — Scraper & Diff Engineer</h3>
+        <p>Branch: feature/scraper-diff · No external deploy</p>
+      </div>
+    </div>
+    <div class="person-body">
+      <div class="person-cols">
+        <div class="task-group">
+          <h4>Hours 0–4 (Foundation)</h4>
+          <ul class="task-list">
+            <li>Install Playwright: <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p3)">uv add playwright beautifulsoup4 && playwright install chromium</code></li>
+            <li>Write <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p3)">scraper_agent.py</code> — fetch_page(), hash_content(), store_snapshot()</li>
+            <li>Test manually on 3 URLs: notion.so, linear.app, asana.com</li>
+            <li>Confirm .html files appear in snapshots/ folder</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 4–10</h4>
+          <ul class="task-list">
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p3)">diff_agent.py</code> — load two snapshots, run unified diff</li>
+            <li>Implement filter_noise() — remove nav/footer/cookie banners</li>
+            <li>Return only changed semantic sections: pricing, hero, features, CTAs</li>
+          </ul>
+        </div>
+        <div class="task-group">
+          <h4>Hours 10–18</h4>
+          <ul class="task-list">
+            <li>Add SHA-256 hash check — skip pages where content hasn't changed</li>
+            <li>Write unit tests for diff_agent — test with pre-saved HTML pairs</li>
+            <li>Connect scraper output to LangGraph state (coordinate with Person 4)</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 18–30</h4>
+          <ul class="task-list">
+            <li>Run full scrapes on all 3 competitors, verify diff quality</li>
+            <li>Handle edge cases: JS-heavy pages, 403 blocks, slow loads</li>
+            <li>Pre-cache 2 full HTML snapshots for demo fallback</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="task-group"><h4>Files You Own</h4></div>
+        <div class="file-chips">
+          <span class="file-chip">backend/agents/scraper_agent.py</span>
+          <span class="file-chip">backend/agents/diff_agent.py</span>
+          <span class="file-chip">backend/snapshots/ (folder)</span>
+          <span class="file-chip">tests/test_scraper.py</span>
+          <span class="file-chip">tests/test_diff.py</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PERSON 4 ── -->
+  <div class="person-block ph4">
+    <div class="person-header">
+      <div class="person-avatar av4">P4</div>
+      <div class="person-header-info">
+        <h3 class="c4">Person 4 — AI / Intelligence Engineer</h3>
+        <p>Branch: feature/ai-agents · Needs ANTHROPIC_API_KEY</p>
+      </div>
+    </div>
+    <div class="person-body">
+      <div class="person-cols">
+        <div class="task-group">
+          <h4>Hours 4–10 (Core AI Pipeline)</h4>
+          <ul class="task-list">
+            <li>Install: <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p4)">uv add langgraph anthropic langchain-community</code></li>
+            <li>Write <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p4)">analyst_agent.py</code> — send diffs to Claude claude-sonnet-4-6, enforce JSON output</li>
+            <li>Write Pydantic Insight schema: claim, category, confidence, source_section</li>
+            <li>Write system prompt in prompts.py — force structured JSON, no hallucination</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 10–18</h4>
+          <ul class="task-list">
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p4)">scorer_agent.py</code> — score novelty, frequency, recency (no LLM, fully deterministic)</li>
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p4)">recommender_agent.py</code> — synthesis prompt, whitespace gaps, action items</li>
+            <li>Build <code style="font-family:'Fira Code',monospace;font-size:10px;color:var(--p4)">orchestrator.py</code> — wire all agents in LangGraph StateGraph</li>
+            <li>Test full graph end-to-end, inspect JSON output</li>
+          </ul>
+        </div>
+        <div class="task-group">
+          <h4>Hours 18–30 (Integration)</h4>
+          <ul class="task-list">
+            <li>Connect orchestrator.py to Person 2's Celery task</li>
+            <li>Enable LangGraph SQLite checkpointing (crash recovery)</li>
+            <li>Cache Claude responses in Redis (avoid repeat API calls on same diff)</li>
+            <li>Run full pipeline on real competitors, review insight quality</li>
+          </ul>
+          <h4 style="margin-top:14px">Hours 30+ (Polish)</h4>
+          <ul class="task-list">
+            <li>Pre-run 2 full analyses, store results in DB for demo fallback</li>
+            <li>Add confidence thresholds — discard low-quality insights</li>
+            <li>Review all prompts.py — iterate on output quality</li>
+          </ul>
+        </div>
+      </div>
+      <div style="margin-top:14px">
+        <div class="task-group"><h4>Files You Own</h4></div>
+        <div class="file-chips">
+          <span class="file-chip">backend/agents/orchestrator.py</span>
+          <span class="file-chip">backend/agents/analyst_agent.py</span>
+          <span class="file-chip">backend/agents/scorer_agent.py</span>
+          <span class="file-chip">backend/agents/recommender_agent.py</span>
+          <span class="file-chip">backend/prompts.py</span>
+          <span class="file-chip">tests/test_agents.py</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SECTION 3: TIMELINE ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">03</span>
+    <span class="sec-title">Parallel Work Timeline</span>
+  </div>
+
+  <table class="timeline-table">
+    <tr>
+      <th>PHASE</th>
+      <th>PERSON 1 — FRONTEND</th>
+      <th>PERSON 2 — BACKEND</th>
+      <th>PERSON 3 — SCRAPER</th>
+      <th>PERSON 4 — AI</th>
+    </tr>
+    <tr>
+      <td><span class="phase-label" style="background:var(--p4-dim);color:var(--p4);border:1px solid var(--p4-border)">0–4h</span></td>
+      <td style="color:var(--p1)">Create Next.js + shadcn, set up folder structure, agree on types.ts</td>
+      <td style="color:var(--p2)">Init FastAPI, Docker Compose, SQLite schema, Pydantic models</td>
+      <td style="color:var(--p3)">Install Playwright, write scraper_agent.py, test on 3 URLs</td>
+      <td style="color:var(--p4)">— (wait for scraper output to arrive first)</td>
+    </tr>
+    <tr>
+      <td><span class="phase-label" style="background:var(--p1-dim);color:var(--p1);border:1px solid var(--p1-border)">4–10h</span></td>
+      <td style="color:var(--p1)">Dashboard shell, TrendChart with mock data, sidebar nav</td>
+      <td style="color:var(--p2)">FastAPI placeholder routes, Celery setup, CRUD functions</td>
+      <td style="color:var(--p3)">Build diff_agent.py, noise filtering, semantic sections</td>
+      <td style="color:var(--p4)">analyst_agent.py, prompts.py, Pydantic Insight schema</td>
+    </tr>
+    <tr>
+      <td><span class="phase-label" style="background:var(--p2-dim);color:var(--p2);border:1px solid var(--p2-border)">10–18h</span></td>
+      <td style="color:var(--p1)">InsightCard, AgentStatus (live polling), TanStack Query</td>
+      <td style="color:var(--p2)">Wire all 3 routes, connect to Celery + LangGraph, CORS</td>
+      <td style="color:var(--p3)">Hash check, unit tests, edge case handling</td>
+      <td style="color:var(--p4)">scorer_agent, recommender_agent, LangGraph orchestrator</td>
+    </tr>
+    <tr>
+      <td><span class="phase-label" style="background:var(--p3-dim);color:var(--p3);border:1px solid var(--p3-border)">18–30h</span></td>
+      <td colspan="4" style="color:var(--muted);text-align:center;font-weight:600">
+        🤝 FULL TEAM INTEGRATION — Connect frontend ↔ API ↔ agents · Fix bugs together · Run on real competitors
+      </td>
+    </tr>
+    <tr>
+      <td><span class="phase-label" style="background:#16a34a22;color:#4ade80;border:1px solid #16a34a33">30–48h</span></td>
+      <td colspan="4" style="color:var(--muted);text-align:center;font-weight:600">
+        🚀 DEPLOY & DEMO PREP — Vercel + Railway deploy · Pre-cache demo data · Rehearse pitch
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- ═══════════════════════════ SECTION 4: GITHUB SETUP ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">04</span>
+    <span class="sec-title">GitHub Repository Setup</span>
+  </div>
+
+  <div class="github-section">
+
+    <div class="gh-row">
+      <div class="gh-card">
+        <h4>📁 Repo Structure</h4>
+        <p>Create one <strong style="color:var(--github)">mono-repo</strong> called <code>market-intelligence-engine</code>. Put both <code>frontend/</code> and <code>backend/</code> in the same repo. Easier to coordinate, one README, one set of issues.</p>
+      </div>
+      <div class="gh-card">
+        <h4>🌿 Branch Strategy</h4>
+        <p>Use <code>main</code> for production-ready code. Use <code>dev</code> as the integration branch. Each person works on their own <code>feature/</code> branch and submits PRs into <code>dev</code>.</p>
+      </div>
+      <div class="gh-card">
+        <h4>🔐 Secrets & .env</h4>
+        <p>Never commit <code>.env</code> files. Add <code>.env</code>, <code>.env.local</code>, <code>*.env</code> to <code>.gitignore</code>. Store secrets in GitHub → Settings → Secrets and Variables for CI/CD.</p>
+      </div>
+    </div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px">Step 1 — One person creates the repo and everyone else forks/clones</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span>Initial setup (Person 2 does this first)</span>
+      </div>
+      <pre><span class="cm"># Person 2 creates the repo on GitHub, then:</span>
+git init market-intelligence-engine
+<span class="kw">cd</span> market-intelligence-engine
+
+<span class="cm"># Create folder structure</span>
+mkdir frontend backend tests
+touch README.md .gitignore docker-compose.yml
+
+<span class="cm"># Add to .gitignore</span>
+<span class="kw">echo</span> <span class="str">".env
+.env.local
+__pycache__/
+*.pyc
+node_modules/
+.next/
+snapshots/
+intel.db
+*.db"</span> >> .gitignore
+
+git add .
+git commit -m <span class="str">"chore: initial repo scaffold"</span>
+git remote add origin https://github.com/YOUR-ORG/market-intelligence-engine.git
+git push -u origin main
+
+<span class="cm"># Create dev branch</span>
+git checkout -b dev
+git push origin dev</pre>
+    </div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;margin-top:20px">Step 2 — Everyone else clones and creates their feature branch</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span>Each team member runs this</span>
+      </div>
+      <pre><span class="cm"># Clone the repo</span>
+git clone https://github.com/YOUR-ORG/market-intelligence-engine.git
+<span class="kw">cd</span> market-intelligence-engine
+
+<span class="cm"># Always branch from dev, not main</span>
+git checkout dev
+git pull origin dev
+
+<span class="cm"># Person 1:</span>
+git checkout -b feature/frontend
+
+<span class="cm"># Person 2:</span>
+git checkout -b feature/backend-api
+
+<span class="cm"># Person 3:</span>
+git checkout -b feature/scraper-diff
+
+<span class="cm"># Person 4:</span>
+git checkout -b feature/ai-agents</pre>
+    </div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;margin-top:20px">Step 3 — Daily workflow (each person does this)</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">bash</span>
+        <span>Daily git workflow</span>
+      </div>
+      <pre><span class="cm"># At start of each work session — pull latest from dev</span>
+git fetch origin
+git merge origin/dev   <span class="cm"># merge any teammates' merged work into your branch</span>
+
+<span class="cm"># Work, then commit regularly (small, specific commits)</span>
+git add backend/agents/scraper_agent.py
+git commit -m <span class="str">"feat(scraper): add SHA-256 hash check to skip unchanged pages"</span>
+
+<span class="cm"># Push your feature branch</span>
+git push origin feature/scraper-diff
+
+<span class="cm"># When your feature is done → open a Pull Request on GitHub</span>
+<span class="cm"># PR: feature/scraper-diff → dev (NOT main)</span></pre>
+    </div>
+
+    <p style="font-size:13px;color:var(--muted);margin-bottom:12px;margin-top:20px">Step 4 — Commit message conventions</p>
+    <div class="code-block">
+      <div class="code-header">
+        <span class="lang">git</span>
+        <span>Conventional Commits — keeps history clean</span>
+      </div>
+      <pre><span class="cm"># Format: type(scope): short description</span>
+
+feat(frontend): add InsightCard component with score badge
+feat(backend): add POST /run-analysis endpoint
+feat(scraper): implement Playwright fetch_page with image blocking
+feat(ai): build analyst_agent with structured Claude output
+
+fix(backend): resolve CORS issue blocking Next.js fetch calls
+fix(scraper): handle 403 responses from Asana.com
+
+chore(deps): add langgraph and anthropic to requirements.txt
+docs: update README with local setup instructions
+test(scraper): add unit tests for diff_agent noise filter</pre>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SECTION 5: PR WORKFLOW ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">05</span>
+    <span class="sec-title">Pull Request Workflow</span>
+  </div>
+
+  <div class="pr-flow">
+    <div class="pr-step">
+      <div class="dot" style="background:var(--p1)"></div>
+      <span>feature/frontend</span>
+    </div>
+    <span class="pr-arrow">→</span>
+    <div class="pr-step">
+      <div class="dot" style="background:var(--p2)"></div>
+      <span>feature/backend-api</span>
+    </div>
+    <span class="pr-arrow">→</span>
+    <div class="pr-step" style="opacity:.4">...</div>
+    <span class="pr-arrow">→</span>
+    <div class="pr-step">
+      <div class="dot" style="background:var(--github)"></div>
+      <strong>PR to dev</strong>
+    </div>
+    <span class="pr-arrow">→</span>
+    <div class="pr-step">
+      <div class="dot" style="background:#4ade80"></div>
+      <strong>Merge to main (final)</strong>
+    </div>
+  </div>
+
+  <p style="font-size:13px;color:var(--muted);margin-bottom:14px;">When to open PRs and how to review:</p>
+  <ul class="checklist">
+    <li>
+      <div class="check-box check-done"></div>
+      <div><strong>Person 2</strong> opens the first PR after scaffold is done (hours 0–4). Everyone reviews the schemas.py so all 4 agree on data structure before writing code.</div>
+    </li>
+    <li>
+      <div class="check-box check-done"></div>
+      <div><strong>Person 3</strong> opens a PR at hour 4 with scraper_agent.py working. Person 4 reviews — they need to consume scraper output in their agents.</div>
+    </li>
+    <li>
+      <div class="check-box check-done"></div>
+      <div><strong>Person 4</strong> opens a PR at hour 10 with analyst_agent.py + prompts.py. Person 2 reviews to see how to integrate into Celery task.</div>
+    </li>
+    <li>
+      <div class="check-box check-done"></div>
+      <div><strong>Person 1</strong> opens a PR at hour 10 with components built on mock data. Person 2 reviews that the API shapes match what frontend expects.</div>
+    </li>
+    <li>
+      <div class="check-box"></div>
+      <div>At hour 18, all 4 PRs are merged to <code>dev</code>. Everyone pulls from dev. Integration sprint begins — bugs are fixed directly on feature branches or hotfix branches.</div>
+    </li>
+    <li>
+      <div class="check-box"></div>
+      <div>At hour 40+, one final PR merges <code>dev → main</code>. Tag it as a release: <code>git tag v1.0.0-hackathon</code></div>
+    </li>
+  </ul>
+</div>
+
+<!-- ═══════════════════════════ SECTION 6: README TEMPLATE ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">06</span>
+    <span class="sec-title">README.md Template</span>
+  </div>
+
+  <p style="color:var(--muted);font-size:13px;margin-bottom:16px">Copy this into your repo's README.md — it will look great on GitHub and impress judges.</p>
+
+  <div class="readme-preview">
+    <div class="readme-badge-row" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px;">
+      <span class="readme-badge rb-next">Next.js 14</span>
+      <span class="readme-badge rb-fast">FastAPI</span>
+      <span class="readme-badge rb-claude">Claude claude-sonnet-4-6</span>
+      <span class="readme-badge rb-docker">Docker</span>
+    </div>
+    <h1>🔍 Market Intelligence Engine</h1>
+    <p>An AI-powered competitor monitoring system that scrapes competitor websites, detects meaningful changes using semantic diffs, and uses Claude claude-sonnet-4-6 to generate actionable intelligence reports — automatically, on a schedule.</p>
+    <h2>Team</h2>
+    <p>| Role | Person | GitHub |<br/>
+    |------|--------|--------|<br/>
+    | Frontend Developer | Person 1 | @handle |<br/>
+    | Backend / API | Person 2 | @handle |<br/>
+    | Scraper & Diff | Person 3 | @handle |<br/>
+    | AI / LangGraph | Person 4 | @handle |</p>
+    <h2>Architecture</h2>
+    <p>Next.js 14 → FastAPI → Celery → LangGraph → [Scraper → Diff → Analyst → Scorer → Recommender] → SQLite</p>
+    <h2>Quick Start</h2>
+    <p>
+      <code>git clone https://github.com/YOUR-ORG/market-intelligence-engine</code><br/>
+      <code>cp .env.example .env</code>  # add ANTHROPIC_API_KEY<br/>
+      <code>docker-compose up</code><br/>
+      Open <code>http://localhost:3000</code>
+    </p>
+    <h2>Live Demo</h2>
+    <p>🌐 Frontend: https://your-project.vercel.app<br/>
+    ⚡ API: https://your-api.railway.app/docs</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ SECTION 7: QUICK CHECKLIST ═══════════════════════════ -->
+<div class="section">
+  <div class="sec-header">
+    <span class="sec-num">07</span>
+    <span class="sec-title">GitHub Setup Checklist</span>
+  </div>
+
+  <ul class="checklist">
+    <li><div class="check-box"></div><div>✅ Person 2 creates mono-repo <code>market-intelligence-engine</code> on GitHub</div></li>
+    <li><div class="check-box"></div><div>✅ Add all 4 team members as collaborators: Settings → Collaborators → Add people</div></li>
+    <li><div class="check-box"></div><div>✅ Create <code>dev</code> branch and protect <code>main</code>: Settings → Branches → Require PR before merging</div></li>
+    <li><div class="check-box"></div><div>✅ Add <code>.env.example</code> (with placeholder values, no real keys!) to repo root</div></li>
+    <li><div class="check-box"></div><div>✅ Add <code>.gitignore</code> with: <code>.env, node_modules/, __pycache__/, *.db, snapshots/</code></div></li>
+    <li><div class="check-box"></div><div>✅ Create GitHub Issues for each person's main tasks (use labels: <code>frontend</code>, <code>backend</code>, <code>scraper</code>, <code>ai</code>)</div></li>
+    <li><div class="check-box"></div><div>✅ Add ANTHROPIC_API_KEY to GitHub Secrets (Settings → Secrets) for CI use</div></li>
+    <li><div class="check-box"></div><div>✅ Connect Vercel to GitHub repo (auto-deploys on push to <code>main</code>)</div></li>
+    <li><div class="check-box"></div><div>✅ Connect Railway to GitHub repo (auto-deploys backend on push to <code>main</code>)</div></li>
+    <li><div class="check-box"></div><div>✅ At the end, tag the final commit: <code>git tag v1.0.0-hackathon && git push --tags</code></div></li>
+  </ul>
+</div>
+
+<div class="footer">
+  <span>market-intelligence-engine · team division guide</span>
+  <span>4 people · mono-repo · feature branching</span>
+</div>
+
+</body>
+</html>
