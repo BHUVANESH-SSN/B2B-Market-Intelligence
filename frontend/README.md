@@ -1,36 +1,76 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🎭 OrchestAI | Market Intelligence Engine
 
-## Getting Started
+**OrchestAI** is a premium, AI-powered competitive intelligence platform designed for B2B SaaS teams. It crawls competitor landing pages, tracks messaging shifts, detects pricing changes, and surfaces strategic whitespace—all powered by autonomous AI agents.
 
-First, run the development server:
+---
+
+## ✨ Key Features
+
+### 🔍 AI-Powered Competitor Discovery
+Describe your product, and OrchestAI's discovery engine will automatically find and rank competitors by similarity. No more manually hunting for your market peers.
+
+### 📊 Intelligence Dashboard
+A high-fidelity dashboard giving you a real-time view of:
+- **Traffic vs. Market Avg:** Benchmark your unique visitor growth against your top 5 competitors.
+- **AI Diagnostics:** Strategic strength/vulnerability analysis based on live landing page data.
+- **Sentiment Analysis:** (Coming Soon) Track brand perception shifts across G2 and Trustpilot.
+
+### 📈 Market Momentum (Trends)
+Visualize competitor activity volume. Detect when a market leader is pivoting their messaging or aggressively testing new pricing tiers.
+
+### 📑 Strategy Reports
+Synthesized executive reports compiled by our **Recommender Agent**, providing deep-dive teardowns into competitor onboarding, pricing studies, and knowledge management shifts.
+
+---
+
+## 🛠️ Technology Stack
+
+- **Framework:** [Next.js 16](https://nextjs.org/) (App Router)
+- **Styling:** [Tailwind CSS 4.0](https://tailwindcss.com/)
+- **Authentication:** [Clerk](https://clerk.com/)
+- **Visuals:** SVG-based custom coordinate charts (Recharts-inspired coordination)
+- **Aesthetics:** Pearl white/Skyblue/Violet gradient themes with Glassmorphism.
+
+---
+
+## 🚀 Getting Started
+
+### 1. Installation
+Clone the repository and install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd frontend
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Environment Setup
+Create a `.env.local` file with your Clerk credentials:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_pub_key
+CLERK_SECRET_KEY=your_secret_key
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/login
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/signup
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Run Locally
+Start the development server with Turbopack for near-instant hot reloads:
 
-## Learn More
+```bash
+pnpm run dev
+```
 
-To learn more about Next.js, take a look at the following resources:
+Open [http://localhost:3000](http://localhost:3000) to access the engine.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📂 Architecture
 
-## Deploy on Vercel
+- `/app`: Root-level clean routing (`/competitors`, `/discover`, `/insights`).
+- `/app/components`: Reusable UI components including the `DashboardLayout` shell.
+- `/public`: Static assets and icons.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🛡️ License
+Distributed under the MIT License. See `LICENSE` for more information.
