@@ -1,3 +1,13 @@
 .env
 __pycache__/
 *.pyc
+.venv/
+ai-agents/.env
+ai-agents/.venv/
+ai-agents/__pycache__/
+ai-agents/outputs/
+scraper-agents/.env
+scraper-agents/.venv/
+scraper-agents/__pycache__/
+scraper-agents/outputs/
+scraper-agents/snapshots/
