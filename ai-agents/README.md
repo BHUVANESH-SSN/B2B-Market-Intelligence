@@ -27,6 +27,12 @@ python3 -m compileall backend tests
 python3 run_pipeline.py --input examples/sample_input.json --output outputs/latest_report.json
 ```
 
+If you want to use the scraper output directly, run:
+
+```bash
+python3 run_pipeline.py --input ../scraper-agents/outputs/latest_diff.json --output outputs/latest_report.json
+```
+
 ## Integration contract
 
 Your expected input is a JSON file with:
