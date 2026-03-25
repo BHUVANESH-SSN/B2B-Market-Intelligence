@@ -1,0 +1,86 @@
+{
+  "metadata": {
+    "mode": "model-backed",
+    "provider": "groq"
+  },
+  "insights": [
+    {
+      "claim": "Acme offers an annual discount for its enterprise plan",
+      "category": "pricing",
+      "confidence": 1.0,
+      "source_section": "pricing",
+      "competitor": "Acme",
+      "evidence": "Introduced annual discount for enterprise plan",
+      "novelty_score": 1.0,
+      "frequency_score": 0.85,
+      "recency_score": 1.0,
+      "priority_score": 0.97
+    },
+    {
+      "claim": "Acme provides custom pricing demos",
+      "category": "pricing",
+      "confidence": 1.0,
+      "source_section": "pricing",
+      "competitor": "Acme",
+      "evidence": "Added CTA for custom pricing demo",
+      "novelty_score": 1.0,
+      "frequency_score": 0.85,
+      "recency_score": 1.0,
+      "priority_score": 0.97
+    },
+    {
+      "claim": "Acme positions itself as an automation-first solution",
+      "category": "messaging",
+      "confidence": 1.0,
+      "source_section": "hero",
+      "competitor": "Acme",
+      "evidence": "Replaced headline with automation-first message",
+      "novelty_score": 1.0,
+      "frequency_score": 0.6,
+      "recency_score": 1.0,
+      "priority_score": 0.92
+    },
+    {
+      "claim": "Acme's workflow builder integrates with Salesforce",
+      "category": "feature",
+      "confidence": 1.0,
+      "source_section": "features",
+      "competitor": "Acme",
+      "evidence": "Added Salesforce integration to workflow builder page",
+      "novelty_score": 1.0,
+      "frequency_score": 0.6,
+      "recency_score": 1.0,
+      "priority_score": 0.92
+    }
+  ],
+  "recommendations": [
+    {
+      "title": "Pricing Strategy Adjustment",
+      "rationale": "Acme's pricing strategy includes annual discounts for enterprise plans and custom pricing demos, indicating a focus on attracting and retaining large customers. To remain competitive, we should consider similar pricing strategies.",
+      "priority": "high",
+      "actions": [
+        "Introduce annual discounts for our enterprise plan",
+        "Develop a custom pricing demo option for potential customers"
+      ]
+    },
+    {
+      "title": "Automation-First Messaging",
+      "rationale": "Acme positions itself as an automation-first solution, highlighting the importance of automation in its messaging. We should consider emphasizing automation capabilities in our own messaging to appeal to customers looking for efficient solutions.",
+      "priority": "medium",
+      "actions": [
+        "Review and adjust our messaging to emphasize automation capabilities",
+        "Develop content highlighting the benefits of automation in our solution"
+      ]
+    },
+    {
+      "title": "Integration with Key Platforms",
+      "rationale": "Acme's workflow builder integrates with Salesforce, demonstrating the importance of integrating with key platforms. We should consider developing similar integrations to enhance our solution's appeal.",
+      "priority": "medium",
+      "actions": [
+        "Develop an integration with Salesforce for our workflow builder",
+        "Research and prioritize integrations with other key platforms"
+      ]
+    }
+  ]
+}
+
